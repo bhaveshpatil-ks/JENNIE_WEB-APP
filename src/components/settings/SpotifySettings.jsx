@@ -30,6 +30,7 @@ import {
 import { useAuthStore } from '../../store/useAuthStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { useLibraryStore } from '../../store/useLibraryStore';
+import { PermissionSettingsSection } from './PermissionSettingsSection';
 
 export function SpotifySettings({ onClose, onOpenCookieSettings }) {
   const {
@@ -718,6 +719,11 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
           </div>
         </div>
       </section>
+
+      {/* ────────────────────────────────────────────────────────────
+          SECTION: APP PERMISSIONS & HARDWARE ACCESS
+         ──────────────────────────────────────────────────────────── */}
+      <PermissionSettingsSection />
 
       {/* ────────────────────────────────────────────────────────────
           SECTION 6: ACCOUNT ACTIONS & DANGER ZONE
