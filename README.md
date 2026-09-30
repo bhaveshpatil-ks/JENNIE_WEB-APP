@@ -105,5 +105,24 @@ npm run electron:build
 
 ---
 
-## 🔒 Safety & Isolation
-This folder (`jennie app codes/`) is completely decoupled from `frontend/` and `backend/`. Any platform customizations, native plugins, or store release builds can be made here without disrupting the live deployed web service.
+## 🔒 Safety, Security & Feedback
+- **API Shielding**: Backend URLs are routed through `/api` reverse proxies; sensitive `.env` keys and native build credentials remain strictly excluded from git tracking.
+- **Help & Complaints Center**: Integrated multi-category user feedback form with auto-priority triaging (High/Medium/Low), screenshot attachment, rate-limiting (5/hr), and human safety review for abuse reports.
+- **User Status Tracking**: Users can monitor past reports in real-time under "My Reports" with ticket reference numbers (e.g. `REF-7A9B3E2F`).
+- **Admin Resolver**: Fast admin console to filter tickets, change status (`open` -> `in_review` -> `resolved`), add internal notes, and reply via email.
+
+---
+
+## ⚡ Automated Contribution Engine
+- **Push All Edits Separately**:
+  ```bash
+  npm run push:all
+  ```
+  *Commits each changed file individually with semantic messages and pushes one-by-one to boost GitHub contributions.*
+
+- **Continuous Watch Mode**:
+  ```bash
+  npm run watch:push
+  ```
+  *Auto-detects saved edits while you code and pushes each file separately.*
+
