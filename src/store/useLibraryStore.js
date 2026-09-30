@@ -54,9 +54,15 @@ const getInitialPlaylists = () => {
 
 export const useLibraryStore = create((set, get) => ({
   // Navigation
-  activeView: 'home', // 'home' | 'search' | 'library' | 'favorites' | 'genre' | 'playlist'
+  activeView: 'home', // 'home' | 'search' | 'library' | 'favorites' | 'genre' | 'playlist' | 'feedback'
   selectedItem: null, // Holds genre object or playlist object when on detail pages
   
+  // Feedback Modal Global State
+  isFeedbackModalOpen: false,
+  feedbackInitialContext: null,
+  openFeedbackModal: (context = null) => set({ isFeedbackModalOpen: true, feedbackInitialContext: context }),
+  closeFeedbackModal: () => set({ isFeedbackModalOpen: false, feedbackInitialContext: null }),
+
   // Search
   searchQuery: '',
   searchFilter: 'all', // 'all' | 'songs' | 'artists' | 'genres'
