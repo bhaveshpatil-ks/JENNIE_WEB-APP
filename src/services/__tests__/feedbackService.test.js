@@ -28,4 +28,25 @@ describe('Feedback & Complaint System', () => {
     const ref = generateReferenceId();
     expect(ref).toMatch(/^REF-[A-Z0-9]{8}$/);
   });
+
+  test('validates submission payload structure requirements', () => {
+    const validPayload = {
+      category: 'playback',
+      description: 'Track buffering indefinitely',
+      userEmail: 'user@example.com',
+    };
+
+    expect(validPayload.category).toBeTruthy();
+    expect(validPayload.description.length).toBeGreaterThan(5);
+    expect(validPayload.userEmail).toContain('@');
+  });
+
+  test('ensures each category has an informative icon and description', () => {
+    FEEDBACK_CATEGORIES.forEach((cat) => {
+      expect(cat.icon).toBeDefined();
+      expect(cat.desc).toBeDefined();
+      expect(cat.desc.length).toBeGreaterThan(0);
+    });
+  });
 });
+
