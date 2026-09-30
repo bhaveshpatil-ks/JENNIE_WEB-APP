@@ -11,7 +11,8 @@ import {
   Maximize2, 
   ShieldCheck, 
   Mic2,
-  ListPlus
+  ListPlus,
+  Flag,
 } from 'lucide-react';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useLibraryStore } from '../../store/useLibraryStore';
@@ -24,6 +25,7 @@ import { getTrackCoverUrl } from '../../data/mockTracks';
 
 export const PlayerBar = () => {
   const openArtist = useLibraryStore((state) => state.openArtist);
+  const openFeedbackModal = useLibraryStore((state) => state.openFeedbackModal);
   const currentTrack = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const togglePlay = usePlayerStore((state) => state.togglePlay);
@@ -287,6 +289,25 @@ export const PlayerBar = () => {
 
           {/* Right: Auxiliary Controls (Queue, Volume, Video, Fullscreen) */}
           <div className="flex items-center justify-end gap-2.5 w-[30%] max-w-[280px]">
+
+            {/* Report Playback Issue Button */}
+            <button
+              type="button"
+              onClick={() => {
+                openFeedbackModal({
+                  category: 'playback',
+                  songId: currentTrack.id,
+                  artist: currentTrack.artist,
+                  trackTitle: currentTrack.title,
+                  playbackPosition: `${Math.floor(currentTime / 60)}:${('0' + Math.floor(currentTime % 60)).slice(-2)}`,
+                });
+              }}
+              aria-label="Report playback issue"
+              className="p-2 rounded-full text-neutral-400 hover:text-red-400 hover:bg-red-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              title="Report Playback Issue"
+            >
+              <Flag size={15} />
+            </button>
 
 
             {/* Lyrics View Toggle Button */}
