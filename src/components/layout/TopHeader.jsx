@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Search, Sparkles, User, Music2, Shield, LogOut, Mail, CheckCircle2, Trash2, Sliders } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Sparkles, User, Music2, Shield, LogOut, Mail, CheckCircle2, Trash2, Sliders, HelpCircle } from 'lucide-react';
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -46,6 +46,7 @@ export const TopHeader = () => {
       case 'cookies': return 'Cookie Policy';
       case 'refund': return 'Refund Policy';
       case 'business': return 'Business Details';
+      case 'feedback': return 'Help & Feedback';
       default: return 'Jennie Music';
     }
   };
@@ -244,6 +245,18 @@ export const TopHeader = () => {
                   >
                     <User size={14} className="text-zinc-300" />
                     <span>Edit Profile &amp; Details</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setActiveView('feedback');
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-colors flex items-center gap-2 font-medium"
+                  >
+                    <HelpCircle size={14} />
+                    <span>Help &amp; Complaints</span>
                   </button>
 
                   <button
