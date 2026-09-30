@@ -11,7 +11,8 @@ import {
   Repeat1, 
   Mic2,
   ListPlus,
-  ListMusic
+  ListMusic,
+  Flag,
 } from 'lucide-react';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useLibraryStore } from '../../store/useLibraryStore';
@@ -37,6 +38,8 @@ export const FullscreenPlayer = () => {
   const toggleRepeat = usePlayerStore((state) => state.toggleRepeat);
   const toggleQueue = usePlayerStore((state) => state.toggleQueue);
   const setQueueOpen = usePlayerStore((state) => state.setQueueOpen);
+  const currentTime = usePlayerStore((state) => state.currentTime);
+  const openFeedbackModal = useLibraryStore((state) => state.openFeedbackModal);
 
   const [showLyrics, setShowLyrics] = useState(false);
   const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
@@ -111,6 +114,24 @@ export const FullscreenPlayer = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Persistent Report Playback Issue Button */}
+            <button
+              type="button"
+              onClick={() => {
+                openFeedbackModal({
+                  category: 'playback',
+                  songId: currentTrack.id,
+                  artist: currentTrack.artist,
+                  trackTitle: currentTrack.title,
+                  playbackPosition: `${Math.floor(currentTime / 60)}:${('0' + Math.floor(currentTime % 60)).slice(-2)}`,
+                });
+              }}
+              aria-label="Report issue with this song"
+              title="Report an issue with this song"
+              className="w-10 h-10 rounded-full bg-white/5 hover:bg-red-500/20 text-neutral-300 hover:text-red-400 border border-white/5 hover:border-red-500/30 transition-all flex items-center justify-center shadow-sm active:scale-95"
+            >
+              <Flag size={16} />
+            </button>
 
             {/* Lyrics Toggle Button */}
             <button
