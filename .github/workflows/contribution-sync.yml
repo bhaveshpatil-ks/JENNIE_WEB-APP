@@ -1,0 +1,31 @@
+name: Automated Contribution & Health Sync
+
+on:
+  schedule:
+    # Runs at 00:00 UTC and 12:00 UTC daily (2 daily contributions guaranteed)
+    - cron: '0 0,12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  contribution-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Git Identity
+        run: |
+          git config user.name "Bhavesh Patil"
+          git config user.email "bhaveshpatil4251@gmail.com"
+
+      - name: Update Activity Ledger
+        run: |
+          echo "Last Active: $(date -u)" >> .github/ACTIVITY.md
+          git add .github/ACTIVITY.md
+          git commit -m "chore(sync): automated repository health & contribution update [$(date -u +'%Y-%m-%d')]" || exit 0
+          git push origin main
