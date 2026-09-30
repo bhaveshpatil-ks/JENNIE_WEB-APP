@@ -17,7 +17,9 @@
     "cap:open:ios": "cap open ios",
     "build:mobile": "vite build && cap sync",
     "electron:dev": "concurrently -k \"cross-env VITE_DEV_SERVER_URL=http://localhost:5173 vite\" \"wait-on tcp:5173 && electron electron/main.cjs\"",
-    "electron:build": "vite build && electron-builder"
+    "electron:build": "vite build && electron-builder",
+    "push:all": "node scripts/auto-commit-push.cjs",
+    "watch:push": "node scripts/auto-commit-push.cjs --watch"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.2",
