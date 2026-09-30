@@ -4,6 +4,7 @@ import { Music } from 'lucide-react';
 import { Sidebar, TopHeader, MobileNav } from './index';
 import { PlayerBar, QueueDrawer, FullscreenPlayer, YouTubePlayerEmbed } from '../player';
 import { CreatePlaylistModal, OfflineAlert } from '../common';
+import { FeedbackModal } from '../feedback/FeedbackModal';
 import { AuthModal } from '../auth/AuthModal';
 import { WelcomeAuthScreen } from '../auth/WelcomeAuthScreen';
 import { useLibraryStore } from '../../store/useLibraryStore';
@@ -31,6 +32,7 @@ import {
   RefundPolicy,
   BusinessDetails,
   Settings,
+  Feedback,
   NotFound,
 } from '../../pages';
 
@@ -38,6 +40,9 @@ export const AppLayout = () => {
   const activeView = useLibraryStore((state) => state.activeView);
   const selectedItem = useLibraryStore((state) => state.selectedItem);
   const syncWithBackend = useLibraryStore((state) => state.syncWithBackend);
+  const isFeedbackModalOpen = useLibraryStore((state) => state.isFeedbackModalOpen);
+  const feedbackInitialContext = useLibraryStore((state) => state.feedbackInitialContext);
+  const closeFeedbackModal = useLibraryStore((state) => state.closeFeedbackModal);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const mainRef = useRef(null);
@@ -92,6 +97,12 @@ export const AppLayout = () => {
       // Check if Create Modal is open
       if (isCreateModalOpen) {
         setIsCreateModalOpen(false);
+        return true;
+      }
+      // Check if Feedback Modal is open
+      const libState = useLibraryStore.getState();
+      if (libState.isFeedbackModalOpen) {
+        libState.closeFeedbackModal();
         return true;
       }
       return false; // let system navigate back or exit
@@ -179,6 +190,7 @@ export const AppLayout = () => {
           else if (hash === 'refund' || hash === 'refund-policy') setActiveView('refund');
           else if (hash === 'business' || hash === 'business-details') setActiveView('business');
           else if (hash === 'settings' || hash === 'account') setActiveView('settings');
+          else if (hash === 'feedback' || hash === 'help' || hash === 'complaints') setActiveView('feedback');
           else setActiveView('home'); // Always default safely to 'home' in native app
           return;
         }
@@ -194,6 +206,7 @@ export const AppLayout = () => {
         else if (path === '/refund-policy' || path === '/refund') setActiveView('refund');
         else if (path === '/business-details' || path === '/business') setActiveView('business');
         else if (path === '/settings' || path === '/account') setActiveView('settings');
+        else if (path === '/feedback' || path === '/help' || path === '/complaints') setActiveView('feedback');
         else setActiveView('404');
       } catch (_) {
         setActiveView('home');
@@ -243,6 +256,7 @@ export const AppLayout = () => {
         refund: '/refund-policy',
         business: '/business-details',
         settings: '/settings',
+        feedback: '/feedback',
         404: '/404',
       };
       const targetPath = pathToView[activeView];
@@ -285,6 +299,8 @@ export const AppLayout = () => {
         return <BusinessDetails />;
       case 'settings':
         return <Settings />;
+      case 'feedback':
+        return <Feedback />;
       case '404':
       case 'notfound':
         return <NotFound />;
@@ -375,6 +391,17 @@ export const AppLayout = () => {
 
       {/* Luxury Authentication Modal */}
       <AuthModal />
+
+      {/* Help & Feedback Complaint Modal */}
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={closeFeedbackModal}
+        initialContext={feedbackInitialContext}
+        onOpenMyReports={() => {
+          closeFeedbackModal();
+          setActiveView('feedback');
+        }}
+      />
     </div>
   );
 };
