@@ -87,7 +87,8 @@ function getChangedFiles() {
   const files = [];
 
   for (const line of lines) {
-    const match = line.match(/^.{2}\s+(.+)$/);
+    const trimmedLine = line.replace(/\r$/, '');
+    const match = trimmedLine.match(/^\s*[A-Z?]{1,2}\s+(.+)$/);
     if (!match) continue;
 
     let filePath = match[1].trim();
