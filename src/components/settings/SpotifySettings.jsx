@@ -24,6 +24,8 @@ import {
   X,
   Calendar,
   Layers,
+  HelpCircle,
+  MessageSquare,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
@@ -683,7 +685,42 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
       </section>
 
       {/* ────────────────────────────────────────────────────────────
-          SECTION 5: ACCOUNT ACTIONS & DANGER ZONE
+          SECTION 5: SUPPORT & COMPLAINTS (Help & Feedback)
+         ──────────────────────────────────────────────────────────── */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-1">
+          Support &amp; Complaints
+        </h2>
+
+        <div className="p-5 sm:p-6 rounded-2xl bg-zinc-900/70 border border-zinc-800 backdrop-blur-md space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-emerald-400" />
+                <span>Help &amp; Complaints Center</span>
+              </h3>
+              <p className="text-xs text-neutral-400 mt-1 leading-relaxed">
+                Report playback errors, buffering issues, bugs, content abuse, or submit recommendations. Every ticket receives an official reference code and tracked resolution.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (onClose) onClose();
+                setActiveView('feedback');
+              }}
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black text-xs font-semibold transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5 shrink-0"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Report Issue / Feedback</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────────────────
+          SECTION 6: ACCOUNT ACTIONS & DANGER ZONE
          ──────────────────────────────────────────────────────────── */}
       <section className="space-y-4">
         <h2 className="text-xs font-semibold text-neutral-400 uppercase tracking-wider px-1">
