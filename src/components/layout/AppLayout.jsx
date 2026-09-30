@@ -5,11 +5,13 @@ import { Sidebar, TopHeader, MobileNav } from './index';
 import { PlayerBar, QueueDrawer, FullscreenPlayer, YouTubePlayerEmbed } from '../player';
 import { CreatePlaylistModal, OfflineAlert } from '../common';
 import { FeedbackModal } from '../feedback/FeedbackModal';
+import { PermissionSetupModal } from '../permissions/PermissionSetupModal';
 import { AuthModal } from '../auth/AuthModal';
 import { WelcomeAuthScreen } from '../auth/WelcomeAuthScreen';
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
+import { usePermissionStore } from '../../store/usePermissionStore';
 import {
   initNativeStatusBar,
   setupHardwareBackButton,
@@ -44,6 +46,15 @@ export const AppLayout = () => {
   const feedbackInitialContext = useLibraryStore((state) => state.feedbackInitialContext);
   const closeFeedbackModal = useLibraryStore((state) => state.closeFeedbackModal);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // App Permissions state
+  const isSetupModalOpen = usePermissionStore((state) => state.isSetupModalOpen);
+  const closeSetupModal = usePermissionStore((state) => state.closeSetupModal);
+  const initPermissions = usePermissionStore((state) => state.initPermissions);
+
+  useEffect(() => {
+    initPermissions();
+  }, [initPermissions]);
 
   const mainRef = useRef(null);
   const contentRef = useRef(null);
@@ -401,6 +412,12 @@ export const AppLayout = () => {
           closeFeedbackModal();
           setActiveView('feedback');
         }}
+      />
+
+      {/* App Permissions Setup Onboarding Modal */}
+      <PermissionSetupModal
+        isOpen={isSetupModalOpen}
+        onClose={closeSetupModal}
       />
     </div>
   );
