@@ -7,5 +7,6 @@ export { ArtistDetail } from './ArtistDetail';
 export { AlbumDetail } from './AlbumDetail';
 export { PrivacyPolicy, TermsAndConditions, CookiePolicy, RefundPolicy, BusinessDetails } from './legal';
 export { Settings } from './Settings';
+export { Feedback } from './Feedback';
 export { NotFound } from './NotFound';
 
