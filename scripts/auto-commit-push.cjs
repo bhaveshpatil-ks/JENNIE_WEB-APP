@@ -16,11 +16,12 @@ const rootDir = path.resolve(__dirname, '..');
 
 function runGit(command, options = {}) {
   try {
-    return execSync(command, {
+    const res = execSync(command, {
       cwd: rootDir,
       encoding: 'utf-8',
       stdio: options.silent ? 'pipe' : 'inherit',
-    }).trim();
+    });
+    return typeof res === 'string' ? res.trim() : '';
   } catch (err) {
     if (!options.silent) {
       console.error(`[Git Error] Command failed: ${command}\n${err.message}`);
@@ -86,8 +87,10 @@ function getChangedFiles() {
   const files = [];
 
   for (const line of lines) {
-    const status = line.slice(0, 2);
-    let filePath = line.slice(3).trim();
+    const match = line.match(/^.{2}\s+(.+)$/);
+    if (!match) continue;
+
+    let filePath = match[1].trim();
 
     // Remove quotes if present
     if (filePath.startsWith('"') && filePath.endsWith('"')) {
@@ -104,7 +107,7 @@ function getChangedFiles() {
       continue;
     }
 
-    files.push({ status, path: filePath });
+    files.push({ path: filePath });
   }
 
   return files;
