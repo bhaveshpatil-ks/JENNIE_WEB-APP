@@ -81,16 +81,16 @@ export const YouTubePlayerEmbed = () => {
 
       const effectiveOrigin = getEffectivePlayerOrigin();
 
-      const initialVideoId = cleanYoutubeId || 'LK7-_dgAVQE';
+      // Only load a video if a track is actively selected; do not load or autoplay any default song on startup
+      const initialVideoId = cleanYoutubeId || null;
       currentVideoIdRef.current = initialVideoId;
 
       try {
-        playerRef.current = new window.YT.Player('yt-player-target', {
+        const playerConfig = {
           height: '200',
           width: '300',
-          videoId: initialVideoId,
           playerVars: {
-            autoplay: 1,
+            autoplay: 0,
             controls: 0,
             disablekb: 1,
             fs: 0,
@@ -105,16 +105,28 @@ export const YouTubePlayerEmbed = () => {
             onReady: (event) => {
               isReadyRef.current = true;
               try {
-                event.target.unMute();
                 event.target.setVolume(getScaledVolume());
-                if (usePlayerStore.getState().isPlaying) {
+                const store = usePlayerStore.getState();
+                // Strictly ONLY play if a track is actively selected and isPlaying is true
+                if (store.isPlaying && store.currentTrack && cleanYoutubeId) {
+                  event.target.unMute();
                   event.target.playVideo();
+                } else {
+                  event.target.pauseVideo();
                 }
               } catch (_) {}
             },
             onStateChange: (event) => {
               // 1 = PLAYING, 2 = PAUSED, 0 = ENDED
               const store = usePlayerStore.getState();
+              // Prevent rogue autoplay when no track is selected
+              if (!store.currentTrack) {
+                try {
+                  event.target.pauseVideo();
+                } catch (_) {}
+                return;
+              }
+
               if (event.data === 1) {
                 // Video is actively playing, cancel any pending error skip timer
                 if (errorSkipTimerRef.current) {
@@ -179,7 +191,13 @@ export const YouTubePlayerEmbed = () => {
               }
             }
           }
-        });
+        };
+
+        if (initialVideoId) {
+          playerConfig.videoId = initialVideoId;
+        }
+
+        playerRef.current = new window.YT.Player('yt-player-target', playerConfig);
         return true;
       } catch (err) {
         console.warn('Failed to construct YT.Player:', err);
