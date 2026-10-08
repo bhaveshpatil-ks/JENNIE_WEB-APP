@@ -15,21 +15,8 @@ export const TopHeader = () => {
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const toggleFullscreen = usePlayerStore((state) => state.toggleFullscreen);
 
-  const { user, profile, openAuthModal, logout } = useAuthStore();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, profile, openAuthModal } = useAuthStore();
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
-  const menuRef = useRef(null);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleSearchFocus = () => {
     if (activeView !== 'search') {
@@ -186,130 +173,21 @@ export const TopHeader = () => {
             </button>
           </div>
         ) : (
-          <div className="relative hidden md:block" ref={menuRef}>
+          <div className="hidden md:block">
             <button
               type="button"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => setIsProfileDrawerOpen(true)}
               aria-label="User Account Menu"
               className="flex items-center gap-2 p-1 pl-2 pr-2.5 rounded-full bg-[#181818] hover:bg-[#222222] border border-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+              title="Open Account Menu"
             >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-zinc-700 via-zinc-800 to-zinc-900 text-white font-bold text-xs flex items-center justify-center border border-zinc-600 shadow-sm">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-700 text-white font-bold text-xs flex items-center justify-center border border-zinc-600 shadow-sm">
                 {initial}
               </div>
               <span className="text-xs font-medium text-white max-w-[90px] truncate hidden sm:inline">
                 {displayName}
               </span>
             </button>
-
-            {/* Account Popover Menu */}
-            {isMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#121214] border border-zinc-800 shadow-2xl p-3 z-50 animate-fadeIn">
-                <div className="px-3 py-2 border-b border-zinc-800/80">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-zinc-700 via-zinc-800 to-zinc-900 text-white font-bold text-sm flex items-center justify-center border border-zinc-600 shadow-sm">
-                      {initial}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">{displayName}</p>
-                      <p className="text-[11px] text-white/50 truncate">{user.email}</p>
-                    </div>
-                  </div>
-
-                  {/* Badges */}
-                  <div className="mt-2.5 flex items-center gap-1.5 flex-wrap">
-                    {profile?.age_bracket && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-neutral-300 border border-white/10">
-                        {profile.age_bracket} Tier
-                      </span>
-                    )}
-                    {profile?.is_minor ? (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 flex items-center gap-1">
-                        <Shield size={10} /> Safe Mode
-                      </span>
-                    ) : (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-                        <CheckCircle2 size={10} /> Full Fidelity
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Menu items */}
-                <div className="py-1 space-y-0.5 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setActiveView('settings');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2"
-                  >
-                    <Sliders size={14} className="text-zinc-300" />
-                    <span>Settings &amp; Audio Quality</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setActiveView('settings');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
-                  >
-                    <User size={14} className="text-zinc-300" />
-                    <span>Edit Profile &amp; Details</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setActiveView('feedback');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition-colors flex items-center gap-2 font-medium"
-                  >
-                    <HelpCircle size={14} />
-                    <span>Help &amp; Complaints</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setActiveView('business');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-white/70 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2"
-                  >
-                    <Shield size={14} />
-                    <span>Account &amp; Operator Details</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      openAuthModal('delete_account_confirm');
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors flex items-center gap-2"
-                  >
-                    <Trash2 size={14} />
-                    <span>Delete Account Permanently</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      logout();
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors flex items-center gap-2 border-t border-white/5 mt-1 pt-2"
-                  >
-                    <LogOut size={14} />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
