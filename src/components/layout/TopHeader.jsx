@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Search, Sparkles, User, Music2, Shield, LogO
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { UserProfileDrawer } from './UserProfileDrawer';
 
 export const TopHeader = () => {
   const activeView = useLibraryStore((state) => state.activeView);
@@ -16,6 +17,7 @@ export const TopHeader = () => {
 
   const { user, profile, openAuthModal, logout } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
   const menuRef = useRef(null);
 
   // Close dropdown on outside click
@@ -51,24 +53,35 @@ export const TopHeader = () => {
     }
   };
 
-  const displayName = profile?.username || user?.displayName || user?.email?.split('@')[0] || 'User';
-  const initial = displayName.charAt(0).toUpperCase();
+  const displayName = profile?.username || user?.displayName || user?.email?.split('@')[0] || 'Bhavesh';
+  const initial = (displayName.charAt(0) || 'B').toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between gap-3 px-4 md:px-8 py-3 bg-[#0A0A0A]/90 backdrop-blur-xl border-b border-white/[0.06]">
-      {/* Mobile Branding */}
-      <div 
-        onClick={() => setActiveView('home')}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('home'); }}
-        className="flex md:hidden items-center gap-2 cursor-pointer focus-visible:outline-none"
-        aria-label="Jennie Music Home"
-      >
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-neutral-800 to-neutral-700 flex items-center justify-center shadow-md">
-          <Music2 size={16} className="text-white" aria-hidden="true" />
+      {/* Mobile Profile Avatar & Branding */}
+      <div className="flex md:hidden items-center gap-2.5">
+        <button
+          type="button"
+          onClick={() => setIsProfileDrawerOpen(true)}
+          aria-label="Open profile menu"
+          className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 via-teal-600 to-cyan-700 text-white font-bold text-sm flex items-center justify-center shadow-md border border-white/20 hover:scale-105 active:scale-95 transition-transform"
+          title="Account & Profile"
+        >
+          {initial}
+        </button>
+        <div 
+          onClick={() => setActiveView('home')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveView('home'); }}
+          className="flex items-center gap-1.5 cursor-pointer focus-visible:outline-none"
+          aria-label="Jennie Music Home"
+        >
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-neutral-800 to-neutral-700 flex items-center justify-center shadow-md">
+            <Music2 size={14} className="text-white" aria-hidden="true" />
+          </div>
+          <span className="text-base font-bold tracking-tight text-white font-serif">Jennie</span>
         </div>
-        <span className="text-base font-bold tracking-tight text-white font-serif">Jennie</span>
       </div>
 
       {/* Desktop Navigation History Controls */}
@@ -300,6 +313,12 @@ export const TopHeader = () => {
           </div>
         )}
       </div>
+
+      {/* User Profile Side Drawer from Sketch 3 */}
+      <UserProfileDrawer 
+        isOpen={isProfileDrawerOpen} 
+        onClose={() => setIsProfileDrawerOpen(false)} 
+      />
     </header>
   );
 };
