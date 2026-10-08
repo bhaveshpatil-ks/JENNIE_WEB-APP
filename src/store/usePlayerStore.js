@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { MOCK_TRACKS, getTrackCoverUrl } from '../data/mockTracks';
 import { shuffleArray } from '../utils/formatters';
 import { decideNextSong, buildRecommendedQueue } from '../services/recommendationEngine';
+import { markTrackUnplayable, isTrackUnplayable } from '../services/unplayableTracksRegistry';
 
 // Singleton HTML5 Audio instance for real audio streaming (Jamendo & Audius)
 let globalAudio = null;
@@ -439,7 +440,7 @@ export const usePlayerStore = create((set, get) => {
       syncMediaSession(currentTrack, true);
     },
 
-    nextTrack: (isExplicitSkip = false) => {
+    nextTrack: (isExplicitSkip = false, options = {}) => {
       const {
         queue,
         currentIndex,
@@ -454,13 +455,16 @@ export const usePlayerStore = create((set, get) => {
 
       if (!currentTrack && queue.length === 0) return;
 
+      const isErrorSkip = Boolean(options && options.isErrorSkip);
+
       let nextIndex = currentIndex + 1;
       let newPenalties = { ...sessionArtistPenalties };
       let newPoolSkips = [...sessionPoolSkips];
 
       // Live Adaptation (Step 5):
       // Skip under 5 seconds: strong negative -> drop artist weight by 60% and regenerate rest of queue
-      const isQuickSkip = (currentTime > 0 && currentTime < 5) || (isExplicitSkip && currentTime < 5);
+      // BUT if this is an automated embed/copyright error skip, NEVER penalize the artist or category!
+      const isQuickSkip = !isErrorSkip && ((currentTime > 0 && currentTime < 5) || (isExplicitSkip && currentTime < 5));
       if (isQuickSkip && currentTrack) {
         const artistKey = currentTrack.artist_id || currentTrack.artist?.toLowerCase();
         if (artistKey) {
@@ -469,7 +473,7 @@ export const usePlayerStore = create((set, get) => {
         if (currentTrack.source_pool) {
           newPoolSkips.push(currentTrack.source_pool);
         }
-      } else if (currentTime >= 30 && currentTrack) {
+      } else if (currentTime >= 30 && currentTrack && !isErrorSkip) {
         // Full listen or > 30 seconds: boost artist weight by 30%
         const artistKey = currentTrack.artist_id || currentTrack.artist?.toLowerCase();
         if (artistKey) {
@@ -530,10 +534,21 @@ export const usePlayerStore = create((set, get) => {
         }
       }
 
+      // Skip over any upcoming songs marked unplayable by YouTube embed restrictions
+      while (nextIndex < activeQueue.length && isTrackUnplayable(activeQueue[nextIndex]?.id || activeQueue[nextIndex]?.youtubeId)) {
+        nextIndex++;
+      }
+
       const nextSong = activeQueue[nextIndex];
       if (nextSong) {
         get().playTrack(nextSong, activeQueue);
       }
+    },
+
+    markTrackUnplayable: (trackId, errorCode, reason) => {
+      markTrackUnplayable(trackId, errorCode, reason);
+      const cleanQueue = get().queue.filter((t) => !isTrackUnplayable(t.id || t.youtubeId));
+      set({ queue: cleanQueue });
     },
 
     prevTrack: () => {
