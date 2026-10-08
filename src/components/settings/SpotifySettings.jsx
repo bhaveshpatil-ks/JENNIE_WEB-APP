@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import {
   User,
-  Mail,
-  Lock,
-  Shield,
   ShieldCheck,
   Check,
-  Save,
-  RefreshCw,
   Sliders,
-  Volume2,
-  Radio,
-  Wifi,
   Trash2,
   LogOut,
   Database,
@@ -25,14 +17,10 @@ import {
   HeartHandshake,
   BookOpen,
   Info,
-  ExternalLink,
   AlertTriangle,
   CheckCircle2,
   X,
-  Calendar,
-  Layers,
   HelpCircle,
-  MessageSquare,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
@@ -48,29 +36,20 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
     deleteAccountPermanently,
     authActionLoading,
     error,
-    successMessage,
     clearAuthNotice,
   } = useAuthStore();
 
   const {
     audioQuality,
     setAudioQuality,
-    dataSaver,
-    toggleDataSaver,
     autoplay,
     toggleAutoplay,
     crossfade,
     setCrossfade,
     normalizeVolume,
     toggleNormalizeVolume,
-    automix,
-    toggleAutomix,
     monoAudio,
     toggleMonoAudio,
-    privateSession,
-    togglePrivateSession,
-    listeningActivity,
-    toggleListeningActivity,
     cacheSize,
     clearAppCache,
   } = useSettingsStore();
@@ -567,6 +546,67 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
               >
                 <div className={`w-5 h-5 rounded-full transition-transform ${
                   autoplay ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
+                }`} />
+              </button>
+            </div>
+
+            <div className="h-px bg-zinc-800/80" />
+
+            {/* Crossfade */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-white">Crossfade Songs</span>
+                <span className="font-mono text-emerald-400 font-bold">{crossfade}s</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="12"
+                step="1"
+                value={crossfade}
+                onChange={(e) => setCrossfade(Number(e.target.value))}
+                className="w-full accent-emerald-500 cursor-pointer h-1.5 bg-zinc-800 rounded-lg"
+              />
+            </div>
+
+            <div className="h-px bg-zinc-800/80" />
+
+            {/* Normalize Volume */}
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-semibold text-white">Normalize Volume</h3>
+                <p className="text-xs text-neutral-400 mt-0.5">Set the same volume level for all tracks</p>
+              </div>
+              <button
+                type="button"
+                onClick={toggleNormalizeVolume}
+                className={`w-11 h-6 rounded-full transition-colors relative shrink-0 p-0.5 ${
+                  normalizeVolume ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
+                }`}
+              >
+                <div className={`w-5 h-5 rounded-full transition-transform ${
+                  normalizeVolume ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
+                }`} />
+              </button>
+            </div>
+
+            <div className="h-px bg-zinc-800/80" />
+
+            {/* Mono Audio */}
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-semibold text-white">Mono Audio</h3>
+                <p className="text-xs text-neutral-400 mt-0.5">Combine left and right audio channels</p>
+              </div>
+              <button
+                type="button"
+                onClick={toggleMonoAudio}
+                className={`w-11 h-6 rounded-full transition-colors relative shrink-0 p-0.5 ${
+                  monoAudio ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
+                }`}
+              >
+                <div className={`w-5 h-5 rounded-full transition-transform ${
+                  monoAudio ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
                 }`} />
               </button>
             </div>
