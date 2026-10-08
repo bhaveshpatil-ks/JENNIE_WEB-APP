@@ -18,6 +18,28 @@ export const extractCleanYoutubeId = (track) => {
 };
 
 /**
+ * Returns a guaranteed valid HTTPS origin for YouTube IFrame handshake.
+ * Falls back to the verified production Netlify domain when running inside
+ * mobile WebViews (Capacitor/Cordova) or local file:// protocols where origin is missing.
+ */
+export const getEffectivePlayerOrigin = () => {
+  if (typeof window === 'undefined') return 'https://jennie-ee.netlify.app';
+  try {
+    const locOrigin = window.location.origin;
+    if (
+      locOrigin &&
+      !locOrigin.startsWith('file:') &&
+      !locOrigin.startsWith('capacitor:') &&
+      !locOrigin.includes('localhost') &&
+      !locOrigin.includes('127.0.0.1')
+    ) {
+      return locOrigin;
+    }
+  } catch (_) {}
+  return 'https://jennie-ee.netlify.app';
+};
+
+/**
  * Official Google YouTube IFrame Player API Engine
  * Directly uses window.YT.Player for native, cross-platform playback with full sound.
  * Eliminates iframe destruction, origin mismatches, and postMessage serialization dropouts.
@@ -57,9 +79,7 @@ export const YouTubePlayerEmbed = () => {
       const targetEl = document.getElementById('yt-player-target');
       if (!targetEl) return false;
 
-      const origin = typeof window !== 'undefined' && window.location.origin && !window.location.origin.startsWith('file:')
-        ? window.location.origin
-        : undefined;
+      const effectiveOrigin = getEffectivePlayerOrigin();
 
       const initialVideoId = cleanYoutubeId || 'LK7-_dgAVQE';
       currentVideoIdRef.current = initialVideoId;
@@ -77,7 +97,9 @@ export const YouTubePlayerEmbed = () => {
             rel: 0,
             modestbranding: 1,
             playsinline: 1,
-            ...(origin ? { origin } : {})
+            enablejsapi: 1,
+            origin: effectiveOrigin,
+            widget_referrer: effectiveOrigin,
           },
           events: {
             onReady: (event) => {
@@ -112,21 +134,46 @@ export const YouTubePlayerEmbed = () => {
               }
             },
             onError: (event) => {
-              console.warn('[YouTube API Error Code]:', event.data);
-              // Only fatal errors indicate the track is unavailable:
-              // 100: Video removed/not found
-              // 101 or 150: Video owner prohibits embedded playback
-              // Ignore non-fatal codes (e.g. 2, 5 or transient network cancels)
-              const isFatal = event.data === 100 || event.data === 101 || event.data === 150;
+              const code = event.data;
+              const store = usePlayerStore.getState();
+              const track = store.currentTrack;
+              const videoId = currentVideoIdRef.current || track?.id;
+
+              const errorMap = {
+                2: 'Invalid video ID parameter or syntax',
+                5: 'HTML5 player error or autoplay policy restricted',
+                100: 'Video removed, deleted, or marked private',
+                101: 'Video owner does not permit embedded playback (label copyright rule)',
+                150: 'Video owner prohibits embedded playback on external domains (e.g. Sony, T-Series)',
+                153: 'Missing or rejected origin/referrer header in app WebView handshake',
+              };
+              const errorReason = errorMap[code] || `YouTube playback error (${code})`;
+
+              console.warn(`[YouTube Player Error] Code: ${code} (${errorReason}) on video: ${videoId}`);
+
+              const isFatal = code === 100 || code === 101 || code === 150 || code === 153 || code === 5 || code === 2;
               if (isFatal) {
-                const store = usePlayerStore.getState();
-                if (store.showToast) {
-                  store.showToast('Track unavailable. Playing next track...');
+                // 1. Blacklist unplayable track in runtime & local storage
+                if (videoId && typeof store.markTrackUnplayable === 'function') {
+                  store.markTrackUnplayable(videoId, code, errorReason);
                 }
+
+                // 2. Friendly UI toast notification
+                if (typeof store.showToast === 'function') {
+                  const friendlyMsg = (code === 101 || code === 150)
+                    ? `Embedding blocked by copyright owner (Code ${code}). Playing next...`
+                    : code === 153
+                    ? `WebView referrer handshake error (Code 153). Playing next...`
+                    : `Track unavailable (Code ${code}). Playing next...`;
+                  store.showToast(friendlyMsg);
+                }
+
+                // 3. Auto-recover by advancing to the next track after 1.2s without penalizing user recommendations
                 if (errorSkipTimerRef.current) clearTimeout(errorSkipTimerRef.current);
                 errorSkipTimerRef.current = setTimeout(() => {
-                  if (usePlayerStore.getState().isPlaying) {
-                    usePlayerStore.getState().nextTrack();
+                  const latestStore = usePlayerStore.getState();
+                  if (latestStore.isPlaying) {
+                    latestStore.nextTrack(false, { isErrorSkip: true });
                   }
                 }, 1200);
               }
@@ -360,7 +407,7 @@ export const YouTubePlayerEmbed = () => {
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-0 right-0 w-[2px] h-[2px] opacity-[0.001] pointer-events-none -z-50 overflow-hidden"
+      className="fixed -bottom-[320px] -right-[320px] w-[280px] h-[200px] pointer-events-none -z-50 overflow-hidden"
       aria-hidden="true"
     >
       <div id="yt-player-target" />
