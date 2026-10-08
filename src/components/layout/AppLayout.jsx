@@ -56,6 +56,12 @@ export const AppLayout = () => {
     initPermissions();
   }, [initPermissions]);
 
+  useEffect(() => {
+    const handleOpenCreate = () => setIsCreateModalOpen(true);
+    window.addEventListener('open-create-playlist', handleOpenCreate);
+    return () => window.removeEventListener('open-create-playlist', handleOpenCreate);
+  }, []);
+
   const mainRef = useRef(null);
   const contentRef = useRef(null);
   const lenisRef = useRef(null);
@@ -380,7 +386,7 @@ export const AppLayout = () => {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <MobileNav />
+      <MobileNav onOpenCreatePlaylist={() => setIsCreateModalOpen(true)} />
 
       {/* Persistent Frosted Player Bar */}
       <PlayerBar />
