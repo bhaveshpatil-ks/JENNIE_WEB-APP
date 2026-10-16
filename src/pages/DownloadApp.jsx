@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   Download, 
-  CheckCircle2, 
-  ShieldCheck, 
+  Check, 
+  Copy, 
+  ExternalLink, 
   Smartphone, 
   Monitor, 
-  ExternalLink, 
-  Copy, 
-  Check, 
-  Sparkles,
-  Zap,
-  Volume2,
-  Sliders,
-  Layers
+  ShieldCheck 
 } from 'lucide-react';
 import { useLibraryStore } from '../store/useLibraryStore';
 
@@ -21,21 +15,17 @@ export const DownloadApp = () => {
   const setActiveView = useLibraryStore((state) => state.setActiveView);
   const [copiedLink, setCopiedLink] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [isInstalledPwa, setIsInstalledPwa] = useState(false);
 
   const ANDROID_APK_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases/latest/download/Jennie-Music.apk';
   const RELEASES_PAGE_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases';
   const WINDOWS_SETUP_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases';
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalledPwa(true);
-    }
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
   }, []);
 
@@ -45,7 +35,6 @@ export const DownloadApp = () => {
       const choice = await deferredPrompt.userChoice;
       if (choice?.outcome === 'accepted') {
         setDeferredPrompt(null);
-        setIsInstalledPwa(true);
       }
     } else {
       window.open(WINDOWS_SETUP_URL, '_blank', 'noopener,noreferrer');
@@ -56,121 +45,112 @@ export const DownloadApp = () => {
     try {
       navigator.clipboard.writeText(ANDROID_APK_URL);
       setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
+      setTimeout(() => setCopiedLink(false), 2000);
     } catch (_) {}
   };
 
   return (
-    <div className="min-h-full pb-32 text-white">
-      {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-30 flex items-center justify-between px-4 sm:px-8 py-4 bg-[#080808]/80 backdrop-blur-xl border-b border-white/[0.06]">
+    <div className="min-h-full pb-28 text-neutral-100 bg-[#09090b]">
+      {/* Top Header Navigation */}
+      <div className="sticky top-0 z-30 flex items-center justify-between px-4 sm:px-8 py-3.5 bg-[#09090b]/90 backdrop-blur-md border-b border-white/[0.08]">
         <button
           type="button"
           onClick={() => setActiveView('home')}
-          className="flex items-center gap-2 text-xs font-semibold text-neutral-400 hover:text-white transition-colors cursor-pointer group"
+          className="flex items-center gap-2 text-xs font-medium text-neutral-400 hover:text-white transition-colors cursor-pointer group"
           aria-label="Back to music player"
         >
-          <div className="w-7 h-7 rounded-full bg-white/5 group-hover:bg-white/10 flex items-center justify-center transition-colors">
-            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+          <div className="w-6 h-6 rounded-md bg-white/5 group-hover:bg-white/10 flex items-center justify-center transition-colors">
+            <ArrowLeft size={13} className="group-hover:-translate-x-0.5 transition-transform" />
           </div>
           <span>Back to Player</span>
         </button>
 
-        <div className="flex items-center gap-2 text-[11px] text-neutral-400">
-          <ShieldCheck size={14} className="text-emerald-400" />
-          <span>Verified Clean &amp; Open Source</span>
+        <div className="flex items-center gap-1.5 text-xs text-neutral-400">
+          <ShieldCheck size={14} className="text-neutral-300" />
+          <span>Open Source Distribution</span>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-8 sm:pt-12">
-        {/* Hero Section */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-neutral-300 text-xs font-medium mb-4">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Latest Release v1.0.23 Available</span>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14">
+        {/* Title & Metadata */}
+        <div className="mb-10 sm:mb-12">
+          <div className="inline-block px-2.5 py-1 rounded-md bg-white/[0.05] border border-white/10 text-neutral-300 text-xs font-mono uppercase tracking-wider mb-3">
+            Release v1.0.23
           </div>
-
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+          <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-white mb-2">
             Download Jennie Music
           </h1>
-          <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
-            Get the full native experience on your devices with background audio, lock-screen controls, synchronized lyrics, and offline playback.
+          <p className="text-neutral-400 text-sm max-w-xl leading-relaxed">
+            Select your platform below to download the application with background playback, synchronized lyrics, and hardware media key integration.
           </p>
         </div>
 
-        {/* 2 Main Platform Cards: Windows & Android */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-16">
+        {/* 2 Platform Options: Android & Windows */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-12">
           {/* Option 1: Android */}
-          <div className="flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-[#121214] border border-white/10 hover:border-white/20 transition-all shadow-xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-
+          <div className="flex flex-col justify-between p-6 rounded-2xl bg-[#121214] border border-white/[0.08] hover:border-white/[0.15] transition-colors">
             <div>
-              {/* Header Badge & Icon */}
-              <div className="flex items-start justify-between mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                  <Smartphone size={28} className="stroke-[2.2]" />
+              <div className="flex items-center justify-between mb-5">
+                <div className="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
+                  <Smartphone size={22} className="stroke-[1.75]" />
                 </div>
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold uppercase tracking-wider">
-                  Mobile &amp; Tablet
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono uppercase bg-white/5 text-neutral-400 border border-white/10">
+                  Android 8.0+
                 </span>
               </div>
 
-              <h2 className="text-2xl font-bold text-white mb-2">Jennie for Android</h2>
-              <p className="text-xs text-neutral-400 mb-6">
-                Package: <code className="text-neutral-300 bg-white/5 px-1.5 py-0.5 rounded">Jennie-Music.apk</code> • Size: ~4.5 MB • Android 8.0+
+              <h2 className="text-lg font-semibold text-white mb-1">Android</h2>
+              <p className="text-xs text-neutral-400 mb-5 font-mono">
+                Jennie-Music.apk • 4.5 MB
               </p>
 
-              {/* Feature Highlights */}
-              <div className="space-y-3 mb-8 text-xs text-neutral-300">
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
-                  <span>Background audio playback with lockscreen notification player</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
-                  <span>Headphone and Bluetooth hardware media buttons (play/pause/skip)</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
-                  <span>Automatic embed playback recovery engine (Code 150/101 auto-failover)</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
-                  <span>Synchronized karaoke-style lyrics and offline playlist storage</span>
-                </div>
-              </div>
+              <ul className="space-y-2.5 mb-7 text-xs text-neutral-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>Background playback with lock screen media controls</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>Headphone and Bluetooth hardware button integration</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>Synchronized lyrics and client-side playlist caching</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>YouTube embed recovery engine for copyright restricted tracks</span>
+                </li>
+              </ul>
             </div>
 
-            <div className="space-y-3 pt-4 border-t border-white/5">
-              {/* Primary Download Button */}
+            <div className="space-y-2 pt-4 border-t border-white/[0.06]">
               <a
                 href={ANDROID_APK_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 download="Jennie-Music.apk"
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white hover:bg-neutral-200 active:scale-[0.99] text-black font-semibold text-xs tracking-tight transition-all cursor-pointer"
               >
-                <Download size={17} className="stroke-[2.5]" />
-                <span>Download APK (Direct)</span>
+                <Download size={15} />
+                <span>Download APK</span>
               </a>
 
-              {/* Secondary Options: Copy link & Releases */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleCopyAndroidLink}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white text-xs font-semibold border border-white/5 transition-colors cursor-pointer"
-                  title="Copy direct download link to clipboard"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 hover:text-white text-xs font-medium border border-white/[0.06] transition-colors cursor-pointer"
                 >
                   {copiedLink ? (
                     <>
-                      <Check size={14} className="text-emerald-400" />
-                      <span className="text-emerald-400">Link Copied!</span>
+                      <Check size={13} className="text-white" />
+                      <span>Copied</span>
                     </>
                   ) : (
                     <>
-                      <Copy size={14} />
-                      <span>Copy APK Link</span>
+                      <Copy size={13} />
+                      <span>Copy Link</span>
                     </>
                   )}
                 </button>
@@ -179,172 +159,122 @@ export const DownloadApp = () => {
                   href={RELEASES_PAGE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white text-xs font-semibold border border-white/5 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 hover:text-white text-xs font-medium border border-white/[0.06] transition-colors"
                 >
-                  <ExternalLink size={14} />
-                  <span>View Release</span>
+                  <ExternalLink size={13} />
+                  <span>Releases</span>
                 </a>
               </div>
             </div>
           </div>
 
           {/* Option 2: Windows */}
-          <div className="flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-[#121214] border border-white/10 hover:border-white/20 transition-all shadow-xl relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-
+          <div className="flex flex-col justify-between p-6 rounded-2xl bg-[#121214] border border-white/[0.08] hover:border-white/[0.15] transition-colors">
             <div>
-              {/* Header Badge & Icon */}
-              <div className="flex items-start justify-between mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                  <Monitor size={28} className="stroke-[2.2]" />
+              <div className="flex items-center justify-between mb-5">
+                <div className="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
+                  <Monitor size={22} className="stroke-[1.75]" />
                 </div>
-                <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-bold uppercase tracking-wider">
-                  Desktop PC
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-mono uppercase bg-white/5 text-neutral-400 border border-white/10">
+                  Windows 10 / 11
                 </span>
               </div>
 
-              <h2 className="text-2xl font-bold text-white mb-2">Jennie for Windows</h2>
-              <p className="text-xs text-neutral-400 mb-6">
-                Package: <code className="text-neutral-300 bg-white/5 px-1.5 py-0.5 rounded">Windows 64-bit App</code> • Windows 10/11
+              <h2 className="text-lg font-semibold text-white mb-1">Windows</h2>
+              <p className="text-xs text-neutral-400 mb-5 font-mono">
+                64-bit Desktop Application
               </p>
 
-              {/* Feature Highlights */}
-              <div className="space-y-3 mb-8 text-xs text-neutral-300">
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
-                  <span>Global system media hotkeys (Play/Pause, Next Track, Prev Track)</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
-                  <span>Runs natively in background without CPU or audio sleep throttling</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
-                  <span>High-resolution desktop UI optimized for widescreen monitors</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
-                  <span>Synchronized lyrics, artist discographies, and queue management</span>
-                </div>
-              </div>
+              <ul className="space-y-2.5 mb-7 text-xs text-neutral-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>System media keys support (Play, Pause, Skip)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>Background execution with zero audio sleep throttling</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>Widescreen desktop layout with synchronized lyrics</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-neutral-500 font-bold select-none">•</span>
+                  <span>Taskbar pinning and standalone desktop window</span>
+                </li>
+              </ul>
             </div>
 
-            <div className="space-y-3 pt-4 border-t border-white/5">
-              {/* Primary Download Button */}
+            <div className="space-y-2 pt-4 border-t border-white/[0.06]">
               {deferredPrompt ? (
                 <button
                   type="button"
                   onClick={handleInstallPwa}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white hover:bg-neutral-200 active:scale-[0.99] text-black font-semibold text-xs tracking-tight transition-all cursor-pointer"
                 >
-                  <Download size={17} className="stroke-[2.5]" />
-                  <span>Install on Windows (Desktop App)</span>
+                  <Download size={15} />
+                  <span>Install on Windows</span>
                 </button>
               ) : (
                 <a
                   href={WINDOWS_SETUP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white hover:bg-neutral-200 active:scale-[0.99] text-black font-semibold text-xs tracking-tight transition-all cursor-pointer"
                 >
-                  <Download size={17} className="stroke-[2.5]" />
+                  <Download size={15} />
                   <span>Get for Windows</span>
                 </a>
               )}
 
-              {/* Web Player fallback button */}
               <button
                 type="button"
                 onClick={() => setActiveView('home')}
-                className="w-full flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white text-xs font-semibold border border-white/5 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-center py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-neutral-300 hover:text-white text-xs font-medium border border-white/[0.06] transition-colors cursor-pointer"
               >
-                <span>Or use Jennie Web Player in browser</span>
+                <span>Continue on Web Player</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Dual Installation Guides: Android & Windows */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-12">
-          {/* Android Guide */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#0e0e10] border border-white/[0.08]">
-            <div className="flex items-center gap-2.5 mb-5">
-              <Smartphone size={20} className="text-emerald-400" />
-              <h3 className="text-base font-bold text-white">How to Install on Android</h3>
+        {/* Installation Instructions */}
+        <div className="p-6 rounded-2xl bg-[#121214] border border-white/[0.08] mb-10">
+          <h3 className="text-sm font-semibold text-white mb-5 uppercase tracking-wider font-mono text-[11px]">
+            Installation Reference
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-neutral-400">
+            <div>
+              <h4 className="text-xs font-semibold text-white mb-2">Android APK Installation</h4>
+              <ol className="space-y-2 list-decimal list-inside text-neutral-300">
+                <li>Download <code className="text-neutral-200 bg-white/5 px-1 py-0.5 rounded font-mono">Jennie-Music.apk</code> to your device.</li>
+                <li>Tap the downloaded file and allow installation from browser settings if prompted.</li>
+                <li>Confirm installation and launch the application.</li>
+              </ol>
             </div>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">1</span>
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Download the APK</h4>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">Tap "Download APK" above to save <code className="text-neutral-300">Jennie-Music.apk</code> onto your phone.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">2</span>
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Enable Unknown Apps</h4>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">When prompted, tap "Settings" and toggle "Allow from this source" for your browser.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">3</span>
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Install &amp; Enjoy</h4>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">Tap "Install" to complete setup and start streaming with synchronized lyrics.</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* Windows Guide */}
-          <div className="p-6 sm:p-7 rounded-3xl bg-[#0e0e10] border border-white/[0.08]">
-            <div className="flex items-center gap-2.5 mb-5">
-              <Monitor size={20} className="text-blue-400" />
-              <h3 className="text-base font-bold text-white">How to Install on Windows</h3>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">1</span>
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Get the App</h4>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">Click "Get for Windows" or install the desktop web app directly from Chrome / Edge.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">2</span>
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Pin to Taskbar</h4>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">Pin Jennie Music to your Windows Taskbar for 1-click desktop launch.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">3</span>
-                <div>
-                  <h4 className="text-xs font-semibold text-white">Hardware Controls</h4>
-                  <p className="text-[11px] text-neutral-400 mt-0.5">Control play, pause, and tracks with your keyboard media keys even when minimized.</p>
-                </div>
-              </div>
+            <div>
+              <h4 className="text-xs font-semibold text-white mb-2">Windows Installation</h4>
+              <ol className="space-y-2 list-decimal list-inside text-neutral-300">
+                <li>Click "Get for Windows" or "Install on Windows" above.</li>
+                <li>Follow the installer prompts or browser desktop app confirmation.</li>
+                <li>Pin Jennie Music to your taskbar for quick access.</li>
+              </ol>
             </div>
           </div>
         </div>
 
-        {/* Security & Verification Banner */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5 text-xs text-neutral-400">
-          <div className="flex items-center gap-3">
-            <ShieldCheck size={20} className="text-emerald-400 shrink-0" />
-            <span>
-              All APK releases are built automatically via GitHub Actions CI from transparent source code.
-            </span>
-          </div>
+        {/* Bottom Verification Note */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-500 py-4 border-t border-white/[0.06]">
+          <span>Source code and automated CI release packages are publicly accessible on GitHub.</span>
           <a
             href="https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-neutral-300 hover:text-white underline shrink-0 font-medium"
+            className="flex items-center gap-1 text-neutral-400 hover:text-white transition-colors"
           >
-            <span>View Source on GitHub</span>
-            <ExternalLink size={12} />
+            <span>Repository</span>
+            <ExternalLink size={11} />
           </a>
         </div>
       </div>
