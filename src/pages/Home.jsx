@@ -1,16 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Flame, 
-  Headphones, 
-  Moon, 
-  Zap, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  Headphones,
+  Moon,
+  Zap,
   Music4,
   Sparkles,
   Disc3,
   User,
-  Play
+  Play,
 } from 'lucide-react';
 import { MOCK_TRACKS, GENRES, FEATURED_MIXES } from '../data/mockTracks';
 import { ARTISTS_DATA } from '../data/artistsData';
@@ -50,13 +50,25 @@ export const Home = () => {
         }));
       }
     });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const top50Tracks = MOCK_TRACKS.slice(0, 10);
-  const bollywoodTracks = feed.bollywood?.length ? feed.bollywood : MOCK_TRACKS.filter((t) => t.genre === 'Bollywood');
-  const punjabiTracks = feed.punjabi?.length ? feed.punjabi : MOCK_TRACKS.filter((t) => t.genre?.includes('Punjabi') || t.genre === 'Punjabi');
-  const romanceTracks = MOCK_TRACKS.filter((t) => t.mood?.toLowerCase().includes('romanc') || t.mood?.toLowerCase().includes('love') || t.mood?.toLowerCase().includes('soulful') || t.mood?.toLowerCase().includes('devotion'));
+  const bollywoodTracks = feed.bollywood?.length
+    ? feed.bollywood
+    : MOCK_TRACKS.filter((t) => t.genre === 'Bollywood');
+  const punjabiTracks = feed.punjabi?.length
+    ? feed.punjabi
+    : MOCK_TRACKS.filter((t) => t.genre?.includes('Punjabi') || t.genre === 'Punjabi');
+  const romanceTracks = MOCK_TRACKS.filter(
+    (t) =>
+      t.mood?.toLowerCase().includes('romanc') ||
+      t.mood?.toLowerCase().includes('love') ||
+      t.mood?.toLowerCase().includes('soulful') ||
+      t.mood?.toLowerCase().includes('devotion')
+  );
   const viralTracks = MOCK_TRACKS.filter((t) => t.featured);
 
   // Sketch 3: "Albums featuring songs you like"
@@ -127,7 +139,8 @@ export const Home = () => {
       title: 'Rockstar',
       artist: 'A.R. Rahman & Mohit Chauhan',
       year: 2011,
-      coverUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
+      coverUrl:
+        'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
       badge: 'Masterpiece Album',
     },
     {
@@ -135,7 +148,8 @@ export const Home = () => {
       title: 'Kabir Singh',
       artist: 'Sachet Tandon & Vishal Mishra',
       year: 2019,
-      coverUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+      coverUrl:
+        'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
       badge: 'All-Time Hit',
     },
     {
@@ -143,7 +157,8 @@ export const Home = () => {
       title: 'Yeh Jawaani Hai Deewani',
       artist: 'Pritam',
       year: 2013,
-      coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
+      coverUrl:
+        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
       badge: 'Classic Celebration',
     },
     {
@@ -151,7 +166,8 @@ export const Home = () => {
       title: 'Shershaah',
       artist: 'B Praak & Jasleen Royal',
       year: 2021,
-      coverUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=600&q=80',
+      coverUrl:
+        'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=600&q=80',
       badge: 'Heartfelt Melodies',
     },
   ];
@@ -215,7 +231,6 @@ export const Home = () => {
 
   return (
     <div className="space-y-8 pb-12">
-
       {/* Quick Curated Playlists Row */}
       <section aria-label="Top Playlists in India">
         <h2 className="text-lg md:text-xl font-bold text-white mb-3.5 tracking-tight flex items-center gap-2">
@@ -239,7 +254,11 @@ export const Home = () => {
               className="group flex items-center gap-3.5 p-3 rounded-2xl bg-[#161616] hover:bg-[#202020] transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md border border-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <img
-                src={(mix.coverUrl && !mix.coverUrl.includes('unsplash.com')) ? mix.coverUrl : 'https://i.ytimg.com/vi/BddP6PYo2gs/hqdefault.jpg'}
+                src={
+                  mix.coverUrl && !mix.coverUrl.includes('unsplash.com')
+                    ? mix.coverUrl
+                    : 'https://i.ytimg.com/vi/BddP6PYo2gs/hqdefault.jpg'
+                }
                 alt={`Playlist artwork for ${mix.title}`}
                 className="w-16 h-16 rounded-xl object-cover flex-shrink-0 shadow"
               />
@@ -247,7 +266,9 @@ export const Home = () => {
                 <h3 className="text-sm font-bold text-white group-hover:text-neutral-100 transition-colors truncate">
                   {mix.title}
                 </h3>
-                <p className="text-xs text-neutral-400 truncate mt-0.5 line-clamp-1">{mix.description}</p>
+                <p className="text-xs text-neutral-400 truncate mt-0.5 line-clamp-1">
+                  {mix.description}
+                </p>
                 <span className="text-[10px] text-neutral-400 font-medium mt-1 inline-block">
                   Top Playlist • Free Stream
                 </span>
@@ -308,9 +329,7 @@ export const Home = () => {
               <h4 className="text-sm font-bold text-white truncate group-hover:text-emerald-400 transition-colors">
                 {album.title}
               </h4>
-              <p className="text-xs text-neutral-400 truncate mt-0.5">
-                {album.artist}
-              </p>
+              <p className="text-xs text-neutral-400 truncate mt-0.5">{album.artist}</p>
               <p className="text-[10px] text-emerald-400/90 font-medium mt-1 truncate">
                 {album.badge}
               </p>
@@ -355,7 +374,10 @@ export const Home = () => {
               >
                 <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden mb-3 bg-[#202020] shadow-md border-2 border-white/10 group-hover:border-emerald-400 transition-colors">
                   <img
-                    src={artist.avatarUrl || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80'}
+                    src={
+                      artist.avatarUrl ||
+                      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80'
+                    }
                     alt={artist.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
@@ -364,9 +386,7 @@ export const Home = () => {
                 <h5 className="text-xs md:text-sm font-bold text-white truncate w-full group-hover:text-emerald-400 transition-colors">
                   {artist.name}
                 </h5>
-                <span className="text-[10px] text-neutral-400 mt-0.5">
-                  Artist
-                </span>
+                <span className="text-[10px] text-neutral-400 mt-0.5">Artist</span>
               </div>
             ))}
           </div>
@@ -413,9 +433,7 @@ export const Home = () => {
                 <h5 className="text-sm font-bold text-white truncate group-hover:text-amber-400 transition-colors">
                   {album.title}
                 </h5>
-                <p className="text-xs text-neutral-400 truncate mt-0.5">
-                  {album.artist}
-                </p>
+                <p className="text-xs text-neutral-400 truncate mt-0.5">{album.artist}</p>
                 <p className="text-[10px] text-amber-400/90 font-medium mt-1 truncate">
                   {album.badge}
                 </p>
