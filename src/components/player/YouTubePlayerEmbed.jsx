@@ -7,11 +7,17 @@ import { usePlayerStore } from '../../store/usePlayerStore';
  */
 export const extractCleanYoutubeId = (track) => {
   if (!track) return null;
-  const raw = track.youtubeId || (typeof track.id === 'string' && track.id.startsWith('yt-') ? track.id : null) || track.id || '';
+  const raw =
+    track.youtubeId ||
+    (typeof track.id === 'string' && track.id.startsWith('yt-') ? track.id : null) ||
+    track.id ||
+    '';
   if (typeof raw !== 'string') return null;
   const str = raw.trim();
   const withoutPrefix = str.startsWith('yt-') ? str.replace('yt-', '') : str;
-  const match = withoutPrefix.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))?([\w-]{11})/);
+  const match = withoutPrefix.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))?([\w-]{11})/
+  );
   if (match && match[1]) return match[1];
   if (/^[\w-]{11}$/.test(withoutPrefix)) return withoutPrefix;
   return null;
@@ -161,9 +167,17 @@ export const YouTubePlayerEmbed = () => {
               };
               const errorReason = errorMap[code] || `YouTube playback error (${code})`;
 
-              console.warn(`[YouTube Player Error] Code: ${code} (${errorReason}) on video: ${videoId}`);
+              console.warn(
+                `[YouTube Player Error] Code: ${code} (${errorReason}) on video: ${videoId}`
+              );
 
-              const isFatal = code === 100 || code === 101 || code === 150 || code === 153 || code === 5 || code === 2;
+              const isFatal =
+                code === 100 ||
+                code === 101 ||
+                code === 150 ||
+                code === 153 ||
+                code === 5 ||
+                code === 2;
               if (isFatal) {
                 // 1. Blacklist unplayable track in runtime & local storage
                 if (videoId && typeof store.markTrackUnplayable === 'function') {
@@ -172,11 +186,12 @@ export const YouTubePlayerEmbed = () => {
 
                 // 2. Friendly UI toast notification
                 if (typeof store.showToast === 'function') {
-                  const friendlyMsg = (code === 101 || code === 150)
-                    ? `Embedding blocked by copyright owner (Code ${code}). Playing next...`
-                    : code === 153
-                    ? `WebView referrer handshake error (Code 153). Playing next...`
-                    : `Track unavailable (Code ${code}). Playing next...`;
+                  const friendlyMsg =
+                    code === 101 || code === 150
+                      ? `Embedding blocked by copyright owner (Code ${code}). Playing next...`
+                      : code === 153
+                        ? `WebView referrer handshake error (Code 153). Playing next...`
+                        : `Track unavailable (Code ${code}). Playing next...`;
                   store.showToast(friendlyMsg);
                 }
 
@@ -189,8 +204,8 @@ export const YouTubePlayerEmbed = () => {
                   }
                 }, 1200);
               }
-            }
-          }
+            },
+          },
         };
 
         if (initialVideoId) {
@@ -263,10 +278,11 @@ export const YouTubePlayerEmbed = () => {
       },
       loadVideo: (videoId) => {
         if (!videoId) return;
-        const cleanId = typeof videoId === 'string' && videoId.startsWith('yt-')
-          ? videoId.replace('yt-', '')
-          : videoId;
-        
+        const cleanId =
+          typeof videoId === 'string' && videoId.startsWith('yt-')
+            ? videoId.replace('yt-', '')
+            : videoId;
+
         const p = playerRef.current;
         if (!p) return;
 
@@ -345,7 +361,7 @@ export const YouTubePlayerEmbed = () => {
           if (p && typeof p.getDuration === 'function') return p.getDuration();
         } catch (_) {}
         return 0;
-      }
+      },
     });
   }, [registerYouTubeController, getScaledVolume]);
 
