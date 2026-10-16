@@ -4,7 +4,7 @@
  * Prevents repeating broken tracks in upcoming recommendations, autoplay queues, and shuffles.
  */
 
-const STORAGE_KEY = 'jennie_unplayable_tracks_v1';
+const STORAGE_KEY = 'jennie_unplayable_tracks_v2';
 
 export const YOUTUBE_ERROR_CODES = {
   INVALID_PARAM: 2,
@@ -30,11 +30,21 @@ let unplayableMap = new Map();
 function loadRegistry() {
   if (typeof window === 'undefined') return;
   try {
+    // Clear out old v1 blacklist created during origin-mismatch localhost runs
+    if (localStorage.getItem('jennie_unplayable_tracks_v1')) {
+      localStorage.removeItem('jennie_unplayable_tracks_v1');
+    }
+
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        unplayableMap = new Map(parsed.map((item) => [item.id, item]));
+        const now = Date.now();
+        // Expire records older than 24 hours so resolved tracks are retried
+        const validRecords = parsed.filter(
+          (item) => !item.expiresAt || item.expiresAt > now
+        );
+        unplayableMap = new Map(validRecords.map((item) => [item.id, item]));
       }
     }
   } catch (_) {
@@ -74,6 +84,7 @@ export function markTrackUnplayable(trackOrVideoId, errorCode, extraInfo = '') {
     reason: desc,
     extraInfo,
     timestamp: new Date().toISOString(),
+    expiresAt: Date.now() + 24 * 60 * 60 * 1000,
   };
 
   unplayableMap.set(cleanId, record);
