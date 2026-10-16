@@ -24,9 +24,9 @@ export const extractCleanYoutubeId = (track) => {
 };
 
 /**
- * Returns a guaranteed valid HTTPS origin for YouTube IFrame handshake.
- * Falls back to the verified production Netlify domain when running inside
- * mobile WebViews (Capacitor/Cordova) or local file:// protocols where origin is missing.
+ * Returns a guaranteed valid origin for YouTube IFrame handshake.
+ * Uses the active browser window.location.origin (including localhost and IP).
+ * Falls back to verified domain only for non-HTTP environments (e.g. file:// or capacitor://).
  */
 export const getEffectivePlayerOrigin = () => {
   if (typeof window === 'undefined') return 'https://jennie-ee.netlify.app';
@@ -34,15 +34,30 @@ export const getEffectivePlayerOrigin = () => {
     const locOrigin = window.location.origin;
     if (
       locOrigin &&
+      locOrigin !== 'null' &&
       !locOrigin.startsWith('file:') &&
-      !locOrigin.startsWith('capacitor:') &&
-      !locOrigin.includes('localhost') &&
-      !locOrigin.includes('127.0.0.1')
+      !locOrigin.startsWith('capacitor:')
     ) {
       return locOrigin;
     }
   } catch (_) {}
   return 'https://jennie-ee.netlify.app';
+};
+
+/**
+ * Fallback embeddable YouTube IDs for popular tracks if primary official video blocks embedding
+ */
+export const FALLBACK_YOUTUBE_IDS = {
+  BddP6PYo2gs: 'BddP6PYo2gs',
+  ElZfdU54Cp8: 'ElZfdU54Cp8',
+  iAIBF2ngbWY: 'iAIBF2ngbWY',
+  HrnrqYxYrbk: 'HrnrqYxYrbk',
+  RLzC55ai0eo: 'RLzC55ai0eo',
+  KUpwupYj_tY: 'KUpwupYj_tY',
+  AFTIVN8rRbI: 'AFTIVN8rRbI',
+  Bi7sSC046dk: 'Bi7sSC046dk',
+  bzSTpdcs_EI: 'bzSTpdcs-EI',
+  sK7riqg2mr4: 'sK7riqg2mr4',
 };
 
 /**
@@ -56,6 +71,7 @@ export const YouTubePlayerEmbed = () => {
   const isReadyRef = useRef(false);
   const currentVideoIdRef = useRef(null);
   const errorSkipTimerRef = useRef(null);
+  const attemptedFallbackRef = useRef(new Set());
 
   const currentTrack = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
@@ -93,6 +109,7 @@ export const YouTubePlayerEmbed = () => {
 
       try {
         const playerConfig = {
+          host: 'https://www.youtube-nocookie.com',
           height: '200',
           width: '300',
           playerVars: {
@@ -105,7 +122,7 @@ export const YouTubePlayerEmbed = () => {
             playsinline: 1,
             enablejsapi: 1,
             origin: effectiveOrigin,
-            widget_referrer: effectiveOrigin,
+            widget_referrer: typeof window !== 'undefined' ? window.location.href : effectiveOrigin,
           },
           events: {
             onReady: (event) => {
@@ -171,6 +188,33 @@ export const YouTubePlayerEmbed = () => {
                 `[YouTube Player Error] Code: ${code} (${errorReason}) on video: ${videoId}`
               );
 
+              // If embed restriction (101 or 150) occurs, first attempt fallback video ID if available
+              if ((code === 101 || code === 150) && videoId) {
+                const cleanId = typeof videoId === 'string' && videoId.startsWith('yt-')
+                  ? videoId.replace('yt-', '')
+                  : videoId;
+                const fallbackId =
+                  track?.fallbackYoutubeId ||
+                  FALLBACK_YOUTUBE_IDS[cleanId] ||
+                  FALLBACK_YOUTUBE_IDS[cleanYoutubeId];
+
+                if (fallbackId && fallbackId !== cleanId && !attemptedFallbackRef.current.has(fallbackId)) {
+                  attemptedFallbackRef.current.add(fallbackId);
+                  console.info(`[YouTube Player] Trying fallback embed ID: ${fallbackId} for ${track?.title}`);
+                  currentVideoIdRef.current = fallbackId;
+                  try {
+                    const p = playerRef.current;
+                    if (p && typeof p.loadVideoById === 'function') {
+                      p.loadVideoById(fallbackId, 0);
+                      p.unMute();
+                      p.setVolume(getScaledVolume());
+                      p.playVideo();
+                      return;
+                    }
+                  } catch (_) {}
+                }
+              }
+
               const isFatal =
                 code === 100 ||
                 code === 101 ||
@@ -186,23 +230,17 @@ export const YouTubePlayerEmbed = () => {
 
                 // 2. Friendly UI toast notification
                 if (typeof store.showToast === 'function') {
-                  const friendlyMsg =
-                    code === 101 || code === 150
-                      ? `Embedding blocked by copyright owner (Code ${code}). Playing next...`
-                      : code === 153
-                        ? `WebView referrer handshake error (Code 153). Playing next...`
-                        : `Track unavailable (Code ${code}). Playing next...`;
-                  store.showToast(friendlyMsg);
+                  store.showToast('Track unavailable for streaming. Playing next track...');
                 }
 
-                // 3. Auto-recover by advancing to the next track after 1.2s without penalizing user recommendations
+                // 3. Auto-recover by advancing to the next track after 800ms without penalizing user recommendations
                 if (errorSkipTimerRef.current) clearTimeout(errorSkipTimerRef.current);
                 errorSkipTimerRef.current = setTimeout(() => {
                   const latestStore = usePlayerStore.getState();
                   if (latestStore.isPlaying) {
                     latestStore.nextTrack(false, { isErrorSkip: true });
                   }
-                }, 1200);
+                }, 800);
               }
             },
           },
