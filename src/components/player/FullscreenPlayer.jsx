@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-  ChevronDown, 
+import {
+  ChevronDown,
   ChevronUp,
-  Play, 
-  Pause, 
-  SkipBack, 
-  SkipForward, 
-  Shuffle, 
-  Repeat, 
-  Repeat1, 
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Shuffle,
+  Repeat,
+  Repeat1,
   Mic2,
   ListPlus,
   ListMusic,
@@ -119,7 +119,9 @@ export const FullscreenPlayer = () => {
             <span className="text-[11px] font-bold uppercase tracking-widest text-neutral-400 block">
               Playing from {(currentTrack.source || 'CATALOG').toUpperCase()}
             </span>
-            <span className="text-xs font-semibold text-white/90">{currentTrack.album || 'Single'}</span>
+            <span className="text-xs font-semibold text-white/90">
+              {currentTrack.album || 'Single'}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -146,7 +148,7 @@ export const FullscreenPlayer = () => {
             <button
               type="button"
               onClick={() => setShowLyrics(!showLyrics)}
-              aria-label={showLyrics ? "Flip to cover art" : "Flip to lyrics"}
+              aria-label={showLyrics ? 'Flip to cover art' : 'Flip to lyrics'}
               title="Flip Card for Lyrics"
               className={`w-10 h-10 rounded-full transition-all duration-300 flex items-center justify-center border shadow-md active:scale-95 ${
                 showLyrics
@@ -161,12 +163,12 @@ export const FullscreenPlayer = () => {
 
         {/* Main Center Area: 3D Flip Card (Cover Artwork <-> Synchronized Lyrics) */}
         <div className="relative z-10 flex flex-col items-center justify-center my-auto max-w-lg mx-auto w-full">
-          <div 
+          <div
             onClick={() => setShowLyrics(!showLyrics)}
             className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 [perspective:1000px] cursor-pointer mb-6 group select-none"
             title="Click or tap to flip card between artwork & lyrics"
           >
-            <div 
+            <div
               className={`w-full h-full relative transition-transform duration-700 [transform-style:preserve-3d] ${
                 showLyrics ? '[transform:rotateY(180deg)]' : ''
               }`}
@@ -181,7 +183,7 @@ export const FullscreenPlayer = () => {
                   }`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-50 pointer-events-none" />
-                
+
                 {/* Floating "Flip for lyrics" hint pill */}
                 <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-[11px] font-medium text-white/90 border border-white/15 flex items-center gap-1.5 shadow-lg group-hover:bg-black/80 transition-all">
                   <Mic2 size={13} className="text-rose-400" />
@@ -212,7 +214,7 @@ export const FullscreenPlayer = () => {
               <h1 className="text-2xl md:text-3xl font-bold text-white truncate tracking-tight">
                 {currentTrack.title}
               </h1>
-              <p 
+              <p
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleFullscreen();
@@ -221,10 +223,13 @@ export const FullscreenPlayer = () => {
                 className="text-sm md:text-base text-neutral-300 hover:text-white hover:underline font-medium truncate mt-0.5 cursor-pointer transition-colors"
                 title={`View ${currentTrack.artist}'s profile`}
               >
-                {currentTrack.artist} • <span className="text-neutral-400 text-xs">{currentTrack.album || currentTrack.genre || 'Single'}</span>
+                {currentTrack.artist} •{' '}
+                <span className="text-neutral-400 text-xs">
+                  {currentTrack.album || currentTrack.genre || 'Single'}
+                </span>
               </p>
             </div>
-            
+
             <div className="flex items-center gap-2 flex-shrink-0">
               {/* + Playlist button matching sketch label "playlist +" */}
               <button
@@ -246,7 +251,11 @@ export const FullscreenPlayer = () => {
           </div>
 
           {/* Playback Controls */}
-          <div className="flex items-center justify-center gap-6 md:gap-8 w-full" role="toolbar" aria-label="Fullscreen Controls">
+          <div
+            className="flex items-center justify-center gap-6 md:gap-8 w-full"
+            role="toolbar"
+            aria-label="Fullscreen Controls"
+          >
             <button
               type="button"
               onClick={toggleShuffle}
