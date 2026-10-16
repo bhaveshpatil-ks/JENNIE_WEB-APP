@@ -54,14 +54,21 @@ jobs:
       - name: Build Web Application
         run: npm run build
 
-      - name: Setup Android SDK Environment & Sync Web Assets
+      - name: Accept Android SDK Licenses
         run: |
-          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
-          npx cap sync android || (npx cap copy android && cp -r dist/* android/app/src/main/assets/public/)
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Sync Web Assets to Android Project
+        run: |
+          mkdir -p android/app/src/main/assets/public
+          cp -r dist/* android/app/src/main/assets/public/
+          cp capacitor.config.json android/app/src/main/assets/ || true
+          npx cap copy android || true
 
       - name: Build Android APK (Debug)
         run: |
           cd android
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
           ./gradlew assembleDebug --stacktrace
           cd ..
 
