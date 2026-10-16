@@ -65,7 +65,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
 
   // Profile editable fields
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [editUsername, setEditUsername] = useState(profile?.username || user?.displayName || 'Bhavesh Patil');
+  const [editUsername, setEditUsername] = useState(
+    profile?.username || user?.displayName || 'Bhavesh Patil'
+  );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [cacheClearedNotice, setCacheClearedNotice] = useState(false);
 
@@ -144,9 +146,7 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
             <ChevronLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Settings
-            </h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Settings</h1>
             <p className="text-xs text-neutral-400 mt-0.5 hidden sm:block">
               Manage account, notifications, audio quality, and support
             </p>
@@ -226,9 +226,7 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 </div>
                 <div>
                   <p className="text-xs text-neutral-400 font-medium">Username</p>
-                  <p className="text-sm font-semibold text-white">
-                    {currentUsername}
-                  </p>
+                  <p className="text-sm font-semibold text-white">{currentUsername}</p>
                   <p className="text-[11px] text-neutral-500">{user?.email || 'Active Listener'}</p>
                 </div>
               </div>
@@ -244,7 +242,10 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
 
             {/* Inline Username Form */}
             {isEditingProfile && (
-              <form onSubmit={handleSaveProfile} className="pt-3 border-t border-zinc-800 flex items-center gap-2">
+              <form
+                onSubmit={handleSaveProfile}
+                className="pt-3 border-t border-zinc-800 flex items-center gap-2"
+              >
                 <input
                   type="text"
                   value={editUsername}
@@ -298,7 +299,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <Bell className="w-5 h-5 text-emerald-400 shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-white">Push Notifications</p>
-                  <p className="text-xs text-neutral-400">Receive alerts when new playlists, releases, or trending tracks drop.</p>
+                  <p className="text-xs text-neutral-400">
+                    Receive alerts when new playlists, releases, or trending tracks drop.
+                  </p>
                 </div>
               </div>
               <button
@@ -308,9 +311,11 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                   notificationsEnabled ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
                 }`}
               >
-                <div className={`w-5 h-5 rounded-full transition-transform ${
-                  notificationsEnabled ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
-                }`} />
+                <div
+                  className={`w-5 h-5 rounded-full transition-transform ${
+                    notificationsEnabled ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
+                  }`}
+                />
               </button>
             </div>
 
@@ -319,7 +324,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-white">Playback Status Banner</p>
-                <p className="text-xs text-neutral-400">Notify of song progress, queue transitions, and background audio updates.</p>
+                <p className="text-xs text-neutral-400">
+                  Notify of song progress, queue transitions, and background audio updates.
+                </p>
               </div>
               <button
                 type="button"
@@ -328,9 +335,13 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                   playbackNotifications ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
                 }`}
               >
-                <div className={`w-5 h-5 rounded-full transition-transform ${
-                  playbackNotifications ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
-                }`} />
+                <div
+                  className={`w-5 h-5 rounded-full transition-transform ${
+                    playbackNotifications
+                      ? 'translate-x-5 bg-black'
+                      : 'translate-x-0 bg-neutral-400'
+                  }`}
+                />
               </button>
             </div>
           </div>
@@ -360,7 +371,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
                 <div>
                   <p className="text-sm font-semibold text-white">Privacy policy</p>
-                  <p className="text-xs text-neutral-400">DPDP Act 2023 statutory privacy and encryption rules</p>
+                  <p className="text-xs text-neutral-400">
+                    DPDP Act 2023 statutory privacy and encryption rules
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -380,7 +393,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <FileText className="w-5 h-5 text-zinc-300" />
                 <div>
                   <p className="text-sm font-semibold text-white">Terms and condition</p>
-                  <p className="text-xs text-neutral-400">Platform license terms, user rights, and service agreements</p>
+                  <p className="text-xs text-neutral-400">
+                    Platform license terms, user rights, and service agreements
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -400,7 +415,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <HelpCircle className="w-5 h-5 text-amber-400" />
                 <div>
                   <p className="text-sm font-semibold text-white">Report for problems</p>
-                  <p className="text-xs text-neutral-400">Report playback buffering, missing audio, or app defects with tracking</p>
+                  <p className="text-xs text-neutral-400">
+                    Report playback buffering, missing audio, or app defects with tracking
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -417,7 +434,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <HeartHandshake className="w-5 h-5 text-teal-400" />
                 <div>
                   <p className="text-sm font-semibold text-white">Support</p>
-                  <p className="text-xs text-neutral-400">Contact developer assistance, customer care, and help desk</p>
+                  <p className="text-xs text-neutral-400">
+                    Contact developer assistance, customer care, and help desk
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -434,7 +453,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <BookOpen className="w-5 h-5 text-cyan-400" />
                 <div>
                   <p className="text-sm font-semibold text-white">Platform rules</p>
-                  <p className="text-xs text-neutral-400">Community standards, fair playback, and terms of respect</p>
+                  <p className="text-xs text-neutral-400">
+                    Community standards, fair playback, and terms of respect
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -463,7 +484,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <Info className="w-5 h-5 text-zinc-300" />
                 <div>
                   <p className="text-sm font-semibold text-white">App details</p>
-                  <p className="text-xs text-neutral-400">Jennie Music • Luxury audio streaming web application</p>
+                  <p className="text-xs text-neutral-400">
+                    Jennie Music • Luxury audio streaming web application
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -480,7 +503,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                 <Code2 className="w-5 h-5 text-emerald-400" />
                 <div>
                   <p className="text-sm font-semibold text-white">Developer details</p>
-                  <p className="text-xs text-neutral-400">Designed &amp; Developed by Bhavesh Patil</p>
+                  <p className="text-xs text-neutral-400">
+                    Designed &amp; Developed by Bhavesh Patil
+                  </p>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-neutral-500" />
@@ -535,7 +560,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h3 className="text-sm font-semibold text-white">Autoplay Next Similar Track</h3>
-                <p className="text-xs text-neutral-400 mt-0.5">Keep the music going after your queue ends</p>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  Keep the music going after your queue ends
+                </p>
               </div>
               <button
                 type="button"
@@ -544,9 +571,11 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                   autoplay ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
                 }`}
               >
-                <div className={`w-5 h-5 rounded-full transition-transform ${
-                  autoplay ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
-                }`} />
+                <div
+                  className={`w-5 h-5 rounded-full transition-transform ${
+                    autoplay ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
+                  }`}
+                />
               </button>
             </div>
 
@@ -575,7 +604,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h3 className="text-sm font-semibold text-white">Normalize Volume</h3>
-                <p className="text-xs text-neutral-400 mt-0.5">Set the same volume level for all tracks</p>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  Set the same volume level for all tracks
+                </p>
               </div>
               <button
                 type="button"
@@ -584,9 +615,11 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                   normalizeVolume ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
                 }`}
               >
-                <div className={`w-5 h-5 rounded-full transition-transform ${
-                  normalizeVolume ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
-                }`} />
+                <div
+                  className={`w-5 h-5 rounded-full transition-transform ${
+                    normalizeVolume ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
+                  }`}
+                />
               </button>
             </div>
 
@@ -596,7 +629,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h3 className="text-sm font-semibold text-white">Mono Audio</h3>
-                <p className="text-xs text-neutral-400 mt-0.5">Combine left and right audio channels</p>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  Combine left and right audio channels
+                </p>
               </div>
               <button
                 type="button"
@@ -605,9 +640,11 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
                   monoAudio ? 'bg-emerald-500' : 'bg-zinc-800 border border-zinc-700'
                 }`}
               >
-                <div className={`w-5 h-5 rounded-full transition-transform ${
-                  monoAudio ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
-                }`} />
+                <div
+                  className={`w-5 h-5 rounded-full transition-transform ${
+                    monoAudio ? 'translate-x-5 bg-black' : 'translate-x-0 bg-neutral-400'
+                  }`}
+                />
               </button>
             </div>
           </div>
@@ -704,12 +741,19 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
               </button>
             </div>
             <p className="text-xs text-neutral-300 leading-relaxed">
-              We provide round-the-clock developer support for Jennie Music listeners. Reach out for any playback assistance or queries.
+              We provide round-the-clock developer support for Jennie Music listeners. Reach out for
+              any playback assistance or queries.
             </p>
             <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/5 space-y-2 text-xs">
-              <p><strong className="text-white">Lead Engineer:</strong> Bhavesh Patil</p>
-              <p><strong className="text-white">Email:</strong> bhaveshpatil4251@gmail.com</p>
-              <p><strong className="text-white">Response Time:</strong> Within 24-48 hours</p>
+              <p>
+                <strong className="text-white">Lead Engineer:</strong> Bhavesh Patil
+              </p>
+              <p>
+                <strong className="text-white">Email:</strong> bhaveshpatil4251@gmail.com
+              </p>
+              <p>
+                <strong className="text-white">Response Time:</strong> Within 24-48 hours
+              </p>
             </div>
             <button
               onClick={() => setShowSupportModal(false)}
@@ -740,9 +784,19 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
               </button>
             </div>
             <div className="space-y-2.5 text-xs text-neutral-300">
-              <p>1. <strong className="text-white">Respectful Listening:</strong> Enjoy music responsibly without abusive streaming bots or automated scrobble scraping.</p>
-              <p>2. <strong className="text-white">Artist Integrity:</strong> All audio playback utilizes licensed YouTube IFrame embeds honoring content creators and rights holders.</p>
-              <p>3. <strong className="text-white">Zero Exploits:</strong> Reverse-engineering playback streams or tampering with player restrictions is strictly prohibited.</p>
+              <p>
+                1. <strong className="text-white">Respectful Listening:</strong> Enjoy music
+                responsibly without abusive streaming bots or automated scrobble scraping.
+              </p>
+              <p>
+                2. <strong className="text-white">Artist Integrity:</strong> All audio playback
+                utilizes licensed YouTube IFrame embeds honoring content creators and rights
+                holders.
+              </p>
+              <p>
+                3. <strong className="text-white">Zero Exploits:</strong> Reverse-engineering
+                playback streams or tampering with player restrictions is strictly prohibited.
+              </p>
             </div>
             <button
               onClick={() => setShowRulesModal(false)}
@@ -773,10 +827,20 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
               </button>
             </div>
             <div className="space-y-2 text-xs text-neutral-300">
-              <p><strong className="text-white">Application Name:</strong> Jennie Music</p>
-              <p><strong className="text-white">Audio Engine:</strong> YouTube IFrame Embed &amp; Lossless HTML5 Media Engine</p>
-              <p><strong className="text-white">Fidelity:</strong> Up to 320 kbps High Definition</p>
-              <p><strong className="text-white">Platform Target:</strong> Responsive Web &amp; Windows Desktop Client</p>
+              <p>
+                <strong className="text-white">Application Name:</strong> Jennie Music
+              </p>
+              <p>
+                <strong className="text-white">Audio Engine:</strong> YouTube IFrame Embed &amp;
+                Lossless HTML5 Media Engine
+              </p>
+              <p>
+                <strong className="text-white">Fidelity:</strong> Up to 320 kbps High Definition
+              </p>
+              <p>
+                <strong className="text-white">Platform Target:</strong> Responsive Web &amp;
+                Windows Desktop Client
+              </p>
             </div>
             <button
               onClick={() => setShowAppDetailsModal(false)}
@@ -807,10 +871,19 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
               </button>
             </div>
             <div className="space-y-2 text-xs text-neutral-300">
-              <p><strong className="text-white">Lead Developer:</strong> Bhavesh Patil</p>
-              <p><strong className="text-white">Email:</strong> bhaveshpatil4251@gmail.com</p>
-              <p><strong className="text-white">Project:</strong> Jennie Music Streaming Web App</p>
-              <p><strong className="text-white">Architecture:</strong> React, Vite, Tailwind CSS, Zustand, Firebase &amp; MongoDB</p>
+              <p>
+                <strong className="text-white">Lead Developer:</strong> Bhavesh Patil
+              </p>
+              <p>
+                <strong className="text-white">Email:</strong> bhaveshpatil4251@gmail.com
+              </p>
+              <p>
+                <strong className="text-white">Project:</strong> Jennie Music Streaming Web App
+              </p>
+              <p>
+                <strong className="text-white">Architecture:</strong> React, Vite, Tailwind CSS,
+                Zustand, Firebase &amp; MongoDB
+              </p>
             </div>
             <button
               onClick={() => setShowDevDetailsModal(false)}
@@ -835,7 +908,9 @@ export function SpotifySettings({ onClose, onOpenCookieSettings }) {
             <div className="space-y-1.5">
               <h3 className="text-base font-bold text-white">Permanently Close Account?</h3>
               <p className="text-xs text-neutral-400 leading-relaxed">
-                Under Section 12 of India&apos;s <strong className="text-white">DPDP Act, 2023</strong> (Right to Erasure), all your account data, credentials, and encrypted records will be deleted immediately.
+                Under Section 12 of India&apos;s{' '}
+                <strong className="text-white">DPDP Act, 2023</strong> (Right to Erasure), all your
+                account data, credentials, and encrypted records will be deleted immediately.
               </p>
             </div>
 
