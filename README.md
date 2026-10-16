@@ -9,7 +9,8 @@ High-fidelity music streaming platform featuring artist discographies, synchroni
 | Platform | Type | Link |
 | :--- | :--- | :--- |
 | **Web App** | Live Production | [https://jennie-ee.netlify.app/](https://jennie-ee.netlify.app/) |
-| **Android APK** | Latest Release | [GitHub Releases & Downloads](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases) |
+| **Android APK (Direct)** | Direct Download | [Download Jennie-Music.apk](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases/latest/download/Jennie-Music.apk) |
+| **Android Releases** | Release History | [GitHub Releases](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases) |
 | **CI Builds** | Automated Artifacts | [GitHub Actions Runs](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/actions) |
 | **Source Code** | Git Repository | [https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP) |
 
@@ -35,7 +36,7 @@ Jennie Music provides uninterrupted, studio-grade audio streaming powered by a c
 
 ### 2. Android
 - Runtime: Capacitor 8 native bridge with Android Gradle Plugin 8.7.3 and Gradle 8.10.2.
-- Target SDK: Android API 34 (Android 14+).
+- Target SDK: Android API 35 (Android 15+).
 - Background audio with lock screen media notifications and hardware volume control routing.
 - Automated CI pipeline compiling debug APKs and publishing releases on GitHub.
 
