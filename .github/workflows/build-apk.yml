@@ -1,0 +1,106 @@
+name: Build Android APK & Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'android/**'
+      - 'public/**'
+      - 'capacitor.config.json'
+      - 'package.json'
+      - '.github/workflows/build-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 'android-apk-build'
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: Build APK & Publish Download Link
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Build Web Application
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Make Gradle Executable
+        run: chmod +x android/gradlew
+
+      - name: Build Android APK (Debug)
+        run: |
+          cd android
+          ./gradlew assembleDebug --stacktrace
+          cd ..
+
+      - name: Prepare APK for Distribution
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk Jennie-Music.apk
+          ls -lh Jennie-Music.apk
+
+      - name: Upload APK as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Jennie-Music-APK
+          path: Jennie-Music.apk
+          retention-days: 30
+
+      - name: Generate Release Version Tag
+        id: vars
+        run: |
+          TAG="v1.0.${{ github.run_number }}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release & Direct Download Link
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: "Jennie Music APK - ${{ steps.vars.outputs.tag }}"
+          body: |
+            ## 🎵 Jennie Music — Android APK Release
+
+            Download and install the latest APK directly on your Android phone or emulator:
+
+            ### ⬇️ Direct Download Link:
+            👉 [**Download Jennie-Music.apk**](https://github.com/${{ github.repository }}/releases/download/${{ steps.vars.outputs.tag }}/Jennie-Music.apk)
+
+            ---
+            ### ✨ Features Included:
+            - **Seamless Playback Engine**: Official YouTube Player API integration with automatic fallback recovery.
+            - **Modern Anti-Slop UI**: Clean, authentic dark-mode design with zero AI purple gradient clutter.
+            - **Hardware & Device Controls**: Headphone buttons, lockscreen notification playback, and background audio support.
+            - **Synchronized Lyrics & Artist Profiles**: Full karaoke-style lyrics and artist catalogs.
+          files: Jennie-Music.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
