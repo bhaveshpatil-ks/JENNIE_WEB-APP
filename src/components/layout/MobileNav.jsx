@@ -96,14 +96,20 @@ export const MobileNav = ({ onOpenCreatePlaylist }) => {
               }`}
             >
               <div className="relative">
-                <Icon size={20} className={isActive ? 'stroke-[2.5px] text-emerald-400' : 'stroke-2'} aria-hidden="true" />
+                <Icon
+                  size={20}
+                  className={isActive ? 'stroke-[2.5px] text-emerald-400' : 'stroke-2'}
+                  aria-hidden="true"
+                />
                 {item.badgeText && (
                   <span className="absolute -top-1.5 -right-3 text-[8px] font-black uppercase px-1 py-0.2 bg-gradient-to-r from-amber-500 to-yellow-400 text-black rounded-full ring-1 ring-black">
                     {item.badgeText}
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] tracking-tight ${isActive ? 'text-white font-semibold' : 'text-neutral-400'}`}>
+              <span
+                className={`text-[10px] tracking-tight ${isActive ? 'text-white font-semibold' : 'text-neutral-400'}`}
+              >
                 {item.label}
               </span>
             </button>
@@ -113,11 +119,11 @@ export const MobileNav = ({ onOpenCreatePlaylist }) => {
 
       {/* Premium Perks Modal (Sketch 3 Feature) */}
       {showPremiumModal && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center p-4 animate-fadeIn"
           onClick={() => setShowPremiumModal(false)}
         >
-          <div 
+          <div
             className="w-full max-w-sm bg-[#121214] border border-white/10 rounded-3xl p-6 shadow-2xl relative animate-slideUp text-white"
             onClick={(e) => e.stopPropagation()}
           >
