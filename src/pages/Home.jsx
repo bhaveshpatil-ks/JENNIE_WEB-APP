@@ -7,7 +7,6 @@ import {
   Moon,
   Zap,
   Music4,
-  Sparkles,
   Disc3,
   User,
   Play,
@@ -55,21 +54,62 @@ export const Home = () => {
     };
   }, []);
 
-  const top50Tracks = MOCK_TRACKS.slice(0, 10);
-  const bollywoodTracks = feed.bollywood?.length
-    ? feed.bollywood
-    : MOCK_TRACKS.filter((t) => t.genre === 'Bollywood');
-  const punjabiTracks = feed.punjabi?.length
-    ? feed.punjabi
-    : MOCK_TRACKS.filter((t) => t.genre?.includes('Punjabi') || t.genre === 'Punjabi');
-  const romanceTracks = MOCK_TRACKS.filter(
-    (t) =>
-      t.mood?.toLowerCase().includes('romanc') ||
-      t.mood?.toLowerCase().includes('love') ||
-      t.mood?.toLowerCase().includes('soulful') ||
-      t.mood?.toLowerCase().includes('devotion')
-  );
-  const viralTracks = MOCK_TRACKS.filter((t) => t.featured);
+  const top50Tracks = [
+    'yt-BddP6PYo2gs', // Kesariya
+    'yt-n_FCrCQ6-9U', // 295
+    'yt-iAIBF2ngbWY', // Pehle Bhi Main
+    'yt-LK7-_dgAVQE', // Softly
+    'yt-SAcpESN_Fk4', // Dil Diyan Gallan
+    'yt-3A-xVp-sW_4', // Sunn Raha Hai
+    'yt-4tywp83zkmk', // Cheques
+    'yt-cl0a3i2wFcc', // Lover
+    'yt-Dmm_s6O_t7o', // Jugnu
+    'yt-a18py61_F_w'  // Tajdar-e-Haram
+  ].map(id => MOCK_TRACKS.find(t => t.id === id)).filter(Boolean);
+
+  const bollywoodTracks = [
+    'yt-RLzC55ai0eo', // Satranga
+    'yt-zRtPUIumXcY', // Deewani Mastani
+    'yt-Il4wSflh4a4', // Tere Sang Yaara
+    'yt-a_V8F788-p8', // Kaise Hua
+    'yt-sCbbMZ-q4-I', // Lut Gaye
+    'yt-T94PHkuydcw', // Kun Faya Kun
+    'yt-pp8vbcOCm8k', // Ghar More Pardesiya
+    'yt-Bi7sSC046dk'  // Tum Se Hi
+  ].map(id => MOCK_TRACKS.find(t => t.id === id)).filter(Boolean);
+
+  const punjabiTracks = [
+    'yt-6xoB4ZiKKn0', // The Last Ride
+    'yt-vsWxs1tuwDk', // Winning Speech
+    'yt-4DfVxVeqk2o', // Born to Shine
+    'yt-VNs_cCtdbPc', // Brown Munde
+    'yt-GgmFC83T24Y', // So High
+    'yt-p4oX1lqA8U8', // Kinni Kinni
+    'yt-vX2cDW8LUWk', // Excuses
+    'yt-ZgG-2XG_r34'  // Same Beef
+  ].map(id => MOCK_TRACKS.find(t => t.id === id)).filter(Boolean);
+
+  const romanceTracks = [
+    'yt-V7LwfY5U5WI', // Jeena Jeena
+    'yt-K3b2wcfP_u0', // Saibo
+    'yt-ElZfdU54Cp8', // Apna Bana Le
+    'yt-gvyUuxdRdR4', // Raataan Lambiyan
+    'yt-P8PWN1OmZOA', // Tu Jaane Na
+    'yt-H2Fp18rYFJE', // Naseeb Se
+    'yt-Vn_Vhycfhrc', // Teri Ore
+    'yt-cWMxCE2HTag'  // Channa Mereya
+  ].map(id => MOCK_TRACKS.find(t => t.id === id)).filter(Boolean);
+
+  const viralTracks = [
+    'yt-0pWsCiBvLOk', // Tauba Tauba
+    'yt-Dmm_s6O_t7o', // Jugnu
+    'yt-p4oX1lqA8U8', // Kinni Kinni
+    'yt-F5S6ALIxyik', // Elevated
+    'yt-SD4Z8dlZPd8', // Genda Phool
+    'yt-GfO-3P_L2Fw', // Proper Patola
+    'yt-BadBAMnpXSc', // Pehli Nazar Mein
+    'yt-nfNc0XJdZ98'  // Param Sundari
+  ].map(id => MOCK_TRACKS.find(t => t.id === id)).filter(Boolean);
 
   // Sketch 3: "Albums featuring songs you like"
   const albumsFeaturingLikedSongs = [
@@ -139,8 +179,7 @@ export const Home = () => {
       title: 'Rockstar',
       artist: 'A.R. Rahman & Mohit Chauhan',
       year: 2011,
-      coverUrl:
-        'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
+      coverUrl: 'https://i.ytimg.com/vi/T94PHkuydcw/hqdefault.jpg',
       badge: 'Masterpiece Album',
     },
     {
@@ -148,8 +187,7 @@ export const Home = () => {
       title: 'Kabir Singh',
       artist: 'Sachet Tandon & Vishal Mishra',
       year: 2019,
-      coverUrl:
-        'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+      coverUrl: 'https://i.ytimg.com/vi/a_V8F788-p8/hqdefault.jpg',
       badge: 'All-Time Hit',
     },
     {
@@ -157,8 +195,7 @@ export const Home = () => {
       title: 'Yeh Jawaani Hai Deewani',
       artist: 'Pritam',
       year: 2013,
-      coverUrl:
-        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
+      coverUrl: 'https://i.ytimg.com/vi/0wS_f51K9-4/hqdefault.jpg',
       badge: 'Classic Celebration',
     },
     {
@@ -166,8 +203,7 @@ export const Home = () => {
       title: 'Shershaah',
       artist: 'B Praak & Jasleen Royal',
       year: 2021,
-      coverUrl:
-        'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=600&q=80',
+      coverUrl: 'https://i.ytimg.com/vi/gvyUuxdRdR4/hqdefault.jpg',
       badge: 'Heartfelt Melodies',
     },
   ];
@@ -341,7 +377,7 @@ export const Home = () => {
       {/* Sketch 3 Section 2: "Popular albums and artists" */}
       <section className="space-y-6 my-8" aria-label="Popular albums and artists">
         <div className="flex items-center gap-2.5">
-          <Sparkles size={20} className="text-amber-400" aria-hidden="true" />
+          <Disc3 size={20} className="text-emerald-400" aria-hidden="true" />
           <h3 className="text-lg md:text-xl font-bold text-white tracking-tight">
             Popular albums and artists
           </h3>
@@ -370,18 +406,12 @@ export const Home = () => {
                     openArtist(artist.name);
                   }
                 }}
-                className="w-32 md:w-36 flex-shrink-0 flex flex-col items-center text-center p-3 rounded-2xl bg-[#141416] hover:bg-[#1C1C1F] border border-white/5 hover:border-white/20 transition-all duration-300 cursor-pointer group"
+                className="w-28 md:w-32 flex-shrink-0 flex flex-col items-center text-center p-3 rounded-2xl bg-[#141416] hover:bg-[#1C1C1F] border border-white/5 hover:border-white/20 transition-all duration-300 cursor-pointer group select-none"
               >
-                <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden mb-3 bg-[#202020] shadow-md border-2 border-white/10 group-hover:border-emerald-400 transition-colors">
-                  <img
-                    src={
-                      artist.avatarUrl ||
-                      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80'
-                    }
-                    alt={artist.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
+                <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-3 bg-gradient-to-br from-neutral-800 via-neutral-900 to-black shadow-lg border-2 border-white/10 group-hover:border-white/30 transition-all duration-300 flex items-center justify-center">
+                  <span className="text-base md:text-lg font-bold tracking-wider text-neutral-200 group-hover:text-white">
+                    {(artist.name || 'Artist').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+                  </span>
                 </div>
                 <h5 className="text-xs md:text-sm font-bold text-white truncate w-full group-hover:text-emerald-400 transition-colors">
                   {artist.name}
