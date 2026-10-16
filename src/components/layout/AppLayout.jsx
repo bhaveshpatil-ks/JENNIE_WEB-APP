@@ -28,6 +28,7 @@ const ArtistDetail = React.lazy(() => import('../../pages/ArtistDetail').then((m
 const AlbumDetail = React.lazy(() => import('../../pages/AlbumDetail').then((m) => ({ default: m.AlbumDetail })));
 const Settings = React.lazy(() => import('../../pages/Settings').then((m) => ({ default: m.Settings })));
 const Feedback = React.lazy(() => import('../../pages/Feedback').then((m) => ({ default: m.Feedback })));
+const DownloadApp = React.lazy(() => import('../../pages/DownloadApp').then((m) => ({ default: m.DownloadApp })));
 const NotFound = React.lazy(() => import('../../pages/NotFound').then((m) => ({ default: m.NotFound })));
 const PrivacyPolicy = React.lazy(() => import('../../pages/legal/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })));
 const TermsAndConditions = React.lazy(() => import('../../pages/legal/TermsAndConditions').then((m) => ({ default: m.TermsAndConditions })));
@@ -207,6 +208,7 @@ export const AppLayout = () => {
           if (hash === 'search') setActiveView('search');
           else if (hash === 'library') setActiveView('library');
           else if (hash === 'favorites') setActiveView('favorites');
+          else if (hash === 'download' || hash === 'downloads' || hash === 'get-app') setActiveView('download');
           else if (hash === 'privacy' || hash === 'privacy-policy') setActiveView('privacy');
           else if (hash === 'terms' || hash === 'terms-and-conditions') setActiveView('terms');
           else if (hash === 'cookies' || hash === 'cookie-policy') setActiveView('cookies');
@@ -223,6 +225,7 @@ export const AppLayout = () => {
         else if (path === '/search') setActiveView('search');
         else if (path === '/library') setActiveView('library');
         else if (path === '/favorites') setActiveView('favorites');
+        else if (path === '/download' || path === '/downloads' || path === '/get-app') setActiveView('download');
         else if (path === '/privacy-policy' || path === '/privacy') setActiveView('privacy');
         else if (path === '/terms-and-conditions' || path === '/terms') setActiveView('terms');
         else if (path === '/cookie-policy' || path === '/cookies') setActiveView('cookies');
@@ -273,6 +276,7 @@ export const AppLayout = () => {
         search: '/search',
         library: '/library',
         favorites: '/favorites',
+        download: '/download',
         privacy: '/privacy-policy',
         terms: '/terms-and-conditions',
         cookies: '/cookie-policy',
@@ -302,6 +306,8 @@ export const AppLayout = () => {
         return <Library onOpenCreatePlaylist={() => setIsCreateModalOpen(true)} />;
       case 'favorites':
         return <Favorites />;
+      case 'download':
+        return <DownloadApp />;
       case 'genre':
         return <PlaylistDetail playlist={selectedItem} isGenre={true} />;
       case 'playlist':
