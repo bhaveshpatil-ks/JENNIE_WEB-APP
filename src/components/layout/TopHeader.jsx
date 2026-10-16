@@ -4,6 +4,7 @@ import { useLibraryStore } from '../../store/useLibraryStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { UserProfileDrawer } from './UserProfileDrawer';
+import { isStandaloneApp } from '../../services/nativeBridge';
 
 export const TopHeader = () => {
   const activeView = useLibraryStore((state) => state.activeView);
@@ -17,6 +18,11 @@ export const TopHeader = () => {
 
   const { user, profile, openAuthModal } = useAuthStore();
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
+  const [isApp, setIsApp] = useState(false);
+
+  useEffect(() => {
+    setIsApp(isStandaloneApp());
+  }, []);
 
   const handleSearchFocus = () => {
     if (activeView !== 'search') {
@@ -149,20 +155,23 @@ export const TopHeader = () => {
           </button>
         )}
 
-        <button
-          type="button"
-          onClick={() => setActiveView('download')}
-          aria-label="Download Jennie App for Android and Windows"
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] md:text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white active:scale-95 border ${
-            activeView === 'download'
-              ? 'bg-white text-black border-white shadow-sm font-bold'
-              : 'bg-[#181818] hover:bg-[#222225] text-neutral-200 hover:text-white border-white/10 hover:border-white/20'
-          }`}
-          title="Download Jennie App for Android and Windows"
-        >
-          <Download size={13} className={activeView === 'download' ? 'text-black' : 'text-neutral-300'} aria-hidden="true" />
-          <span>Download App</span>
-        </button>
+        {!isApp && (
+          <a
+            href="/download"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Download Jennie App for Android and Windows (opens in a new page)"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] md:text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white active:scale-95 border ${
+              activeView === 'download'
+                ? 'bg-white text-black border-white shadow-sm font-bold'
+                : 'bg-[#181818] hover:bg-[#222225] text-neutral-200 hover:text-white border-white/10 hover:border-white/20'
+            }`}
+            title="Download Jennie App for Android and Windows (opens in a new page)"
+          >
+            <Download size={13} className={activeView === 'download' ? 'text-black' : 'text-neutral-300'} aria-hidden="true" />
+            <span>Download App</span>
+          </a>
+        )}
 
         {/* User Auth Section (Desktop only - mobile uses dedicated bottom nav) */}
         {!user ? (
