@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Search, Sparkles, User, Music2, Shield, LogOut, Mail, CheckCircle2, Trash2, Sliders, HelpCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search, Download, Sparkles, User, Music2, Shield, LogOut, Mail, CheckCircle2, Trash2, Sliders, HelpCircle } from 'lucide-react';
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -30,6 +30,7 @@ export const TopHeader = () => {
       case 'search': return 'Search';
       case 'library': return 'Your Library';
       case 'favorites': return 'Liked Songs';
+      case 'download': return 'Download App';
       case 'privacy': return 'Privacy Policy';
       case 'terms': return 'Terms & Conditions';
       case 'cookies': return 'Cookie Policy';
@@ -148,10 +149,20 @@ export const TopHeader = () => {
           </button>
         )}
 
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#181818] border border-white/5 text-neutral-300 text-[11px] md:text-xs font-semibold">
-          <Sparkles size={12} className="text-zinc-400" aria-hidden="true" />
-          <span>Jennie Cloud</span>
-        </div>
+        <button
+          type="button"
+          onClick={() => setActiveView('download')}
+          aria-label="Download Jennie App for Android and Windows"
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] md:text-xs font-semibold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white active:scale-95 border ${
+            activeView === 'download'
+              ? 'bg-white text-black border-white shadow-sm font-bold'
+              : 'bg-[#181818] hover:bg-[#222225] text-neutral-200 hover:text-white border-white/10 hover:border-white/20'
+          }`}
+          title="Download Jennie App for Android and Windows"
+        >
+          <Download size={13} className={activeView === 'download' ? 'text-black' : 'text-neutral-300'} aria-hidden="true" />
+          <span>Download App</span>
+        </button>
 
         {/* User Auth Section (Desktop only - mobile uses dedicated bottom nav) */}
         {!user ? (
