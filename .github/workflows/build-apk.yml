@@ -54,8 +54,10 @@ jobs:
       - name: Build Web Application
         run: npm run build
 
-      - name: Sync Capacitor Android
-        run: npx cap sync android
+      - name: Setup Android SDK Environment & Sync Web Assets
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+          npx cap sync android || (npx cap copy android && cp -r dist/* android/app/src/main/assets/public/)
 
       - name: Build Android APK (Debug)
         run: |
