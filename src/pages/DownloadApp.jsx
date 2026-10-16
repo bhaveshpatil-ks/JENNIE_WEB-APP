@@ -20,10 +20,37 @@ import { useLibraryStore } from '../store/useLibraryStore';
 export const DownloadApp = () => {
   const setActiveView = useLibraryStore((state) => state.setActiveView);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalledPwa, setIsInstalledPwa] = useState(false);
 
   const ANDROID_APK_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases/latest/download/Jennie-Music.apk';
   const RELEASES_PAGE_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases';
-  const WINDOWS_APP_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases';
+  const WINDOWS_SETUP_URL = 'https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases';
+
+  React.useEffect(() => {
+    const handleBeforeInstall = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalledPwa(true);
+    }
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+  }, []);
+
+  const handleInstallPwa = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice?.outcome === 'accepted') {
+        setDeferredPrompt(null);
+        setIsInstalledPwa(true);
+      }
+    } else {
+      window.open(WINDOWS_SETUP_URL, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const handleCopyAndroidLink = () => {
     try {
@@ -118,6 +145,8 @@ export const DownloadApp = () => {
               {/* Primary Download Button */}
               <a
                 href={ANDROID_APK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 download="Jennie-Music.apk"
                 className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10"
               >
@@ -130,7 +159,7 @@ export const DownloadApp = () => {
                 <button
                   type="button"
                   onClick={handleCopyAndroidLink}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white text-xs font-semibold border border-white/5 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white text-xs font-semibold border border-white/5 transition-colors cursor-pointer"
                   title="Copy direct download link to clipboard"
                 >
                   {copiedLink ? (
@@ -153,7 +182,7 @@ export const DownloadApp = () => {
                   className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white text-xs font-semibold border border-white/5 transition-colors"
                 >
                   <ExternalLink size={14} />
-                  <span>View All Releases</span>
+                  <span>View Release</span>
                 </a>
               </div>
             </div>
@@ -176,7 +205,7 @@ export const DownloadApp = () => {
 
               <h2 className="text-2xl font-bold text-white mb-2">Jennie for Windows</h2>
               <p className="text-xs text-neutral-400 mb-6">
-                Package: <code className="text-neutral-300 bg-white/5 px-1.5 py-0.5 rounded">Jennie-Music-Setup.exe</code> • Windows 10/11 (64-bit)
+                Package: <code className="text-neutral-300 bg-white/5 px-1.5 py-0.5 rounded">Windows 64-bit App</code> • Windows 10/11
               </p>
 
               {/* Feature Highlights */}
@@ -202,15 +231,26 @@ export const DownloadApp = () => {
 
             <div className="space-y-3 pt-4 border-t border-white/5">
               {/* Primary Download Button */}
-              <a
-                href={WINDOWS_APP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10"
-              >
-                <Download size={17} className="stroke-[2.5]" />
-                <span>Get for Windows</span>
-              </a>
+              {deferredPrompt ? (
+                <button
+                  type="button"
+                  onClick={handleInstallPwa}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10 cursor-pointer"
+                >
+                  <Download size={17} className="stroke-[2.5]" />
+                  <span>Install on Windows (Desktop App)</span>
+                </button>
+              ) : (
+                <a
+                  href={WINDOWS_SETUP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-white hover:bg-neutral-200 active:scale-[0.98] text-black font-bold text-sm transition-all shadow-lg shadow-white/10"
+                >
+                  <Download size={17} className="stroke-[2.5]" />
+                  <span>Get for Windows</span>
+                </a>
+              )}
 
               {/* Web Player fallback button */}
               <button
@@ -224,38 +264,67 @@ export const DownloadApp = () => {
           </div>
         </div>
 
-        {/* Simple Step-by-Step Installation Guide */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e10] border border-white/[0.08] mb-12">
-          <h3 className="text-lg font-bold text-white mb-6">How to Install on Android</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-sm font-bold text-white">
-                1
-              </div>
-              <h4 className="text-sm font-semibold text-white">Download the APK</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Tap the "Download APK" button above to download <code className="text-neutral-300">Jennie-Music.apk</code> directly onto your Android device.
-              </p>
+        {/* Dual Installation Guides: Android & Windows */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-12">
+          {/* Android Guide */}
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#0e0e10] border border-white/[0.08]">
+            <div className="flex items-center gap-2.5 mb-5">
+              <Smartphone size={20} className="text-emerald-400" />
+              <h3 className="text-base font-bold text-white">How to Install on Android</h3>
             </div>
-
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-sm font-bold text-white">
-                2
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">1</span>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">Download the APK</h4>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">Tap "Download APK" above to save <code className="text-neutral-300">Jennie-Music.apk</code> onto your phone.</p>
+                </div>
               </div>
-              <h4 className="text-sm font-semibold text-white">Enable Unknown Apps</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                When prompted by Android, tap "Settings" and switch on "Allow from this source" for your browser (Chrome or Files).
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">2</span>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">Enable Unknown Apps</h4>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">When prompted, tap "Settings" and toggle "Allow from this source" for your browser.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">3</span>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">Install &amp; Enjoy</h4>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">Tap "Install" to complete setup and start streaming with synchronized lyrics.</p>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-sm font-bold text-white">
-                3
+          {/* Windows Guide */}
+          <div className="p-6 sm:p-7 rounded-3xl bg-[#0e0e10] border border-white/[0.08]">
+            <div className="flex items-center gap-2.5 mb-5">
+              <Monitor size={20} className="text-blue-400" />
+              <h3 className="text-base font-bold text-white">How to Install on Windows</h3>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">1</span>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">Get the App</h4>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">Click "Get for Windows" or install the desktop web app directly from Chrome / Edge.</p>
+                </div>
               </div>
-              <h4 className="text-sm font-semibold text-white">Install &amp; Enjoy</h4>
-              <p className="text-xs text-neutral-400 leading-relaxed">
-                Tap "Install". Once finished, open Jennie Music and start streaming your favorite tracks with synced lyrics!
-              </p>
+              <div className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">2</span>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">Pin to Taskbar</h4>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">Pin Jennie Music to your Windows Taskbar for 1-click desktop launch.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">3</span>
+                <div>
+                  <h4 className="text-xs font-semibold text-white">Hardware Controls</h4>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">Control play, pause, and tracks with your keyboard media keys even when minimized.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
