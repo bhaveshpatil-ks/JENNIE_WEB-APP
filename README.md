@@ -1,128 +1,147 @@
-# 📱 Jennie Music — Multi-Platform Native Application
+# Jennie Music
 
-> Complete cross-platform application codebase powering **Jennie Music** across **Android**, **iOS**, **Windows**, and **macOS**.
-> Isolated in `jennie app codes/` for complete architectural safety and clear separation of concerns.
-
----
-
-## 🏗️ Architecture Overview
-
-This multi-platform architecture builds upon Jennie's React 19 high-fidelity streaming frontend, wrapped in native runtimes:
-
-1. **Android & iOS (Mobile)**:
-   - Powered by **Capacitor 8** native runtime.
-   - Native Plugins:
-     - `@capacitor/status-bar`: Immersive `#080808` dark status bar matching the luxury obsidian UI.
-     - `@capacitor/haptics`: Tactile feedback on track playback, likes, and seeking.
-     - `@capacitor/app`: Hardware back-button listener on Android (closes active modals/drawers before navigating).
-   - Safe Area CSS insets (`env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`) supporting iPhone dynamic island, notches, and Android gesture navigation bars.
-   - Background audio lockscreen controls via `MediaSession` API with album art, artist, and track title.
-
-2. **Windows & macOS (Desktop)**:
-   - Powered by **Electron 44** & **electron-builder**.
-   - Global media keys: `MediaPlayPause`, `MediaNextTrack`, and `MediaPreviousTrack` registered at the OS level so your physical keyboard media keys control Jennie even when the window is minimized.
-   - Background audio throttling disabled (`backgroundThrottling: false`) to guarantee uninterrupted playback.
-   - Frameless luxury obsidian window styling.
+High-fidelity music streaming platform featuring artist discographies, synchronized lyrics, responsive web streaming, and native Android and Windows desktop applications.
 
 ---
 
-## 📁 Directory Structure
+## Live Application & Downloads
+
+| Platform | Type | Link |
+| :--- | :--- | :--- |
+| **Web App** | Live Production | [https://jennie-ee.netlify.app/](https://jennie-ee.netlify.app/) |
+| **Android APK** | Latest Release | [GitHub Releases & Downloads](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/releases) |
+| **CI Builds** | Automated Artifacts | [GitHub Actions Runs](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP/actions) |
+| **Source Code** | Git Repository | [https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP](https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP) |
+
+---
+
+## Overview
+
+Jennie Music provides uninterrupted, studio-grade audio streaming powered by a custom hybrid playback engine:
+- **Audio Architecture**: YouTube IFrame API playback with automatic embed-restriction recovery (Code 150/101 auto-failover to verified audio/lyric streams).
+- **Modern User Interface**: Neutral dark monochrome interface designed according to anti-slop guidelines with zero artificial gradients or cluttered badge schemes.
+- **Hardware Integrations**: Support for Bluetooth headphone media controls (play, pause, skip), background playback, and system media session metadata.
+- **Synchronized Lyrics**: Real-time syllable and line-synced lyrics display.
+- **Offline Storage**: Persistent client-side caching for fast local playlist access.
+
+---
+
+## Platform Support
+
+### 1. Web
+- Framework: React 19 with Vite 6 and Tailwind CSS.
+- Deployed on Netlify with automated continuous deployment.
+- Responsive layout supporting ultra-wide desktop monitors, laptops, tablets, and mobile browsers.
+
+### 2. Android
+- Runtime: Capacitor 8 native bridge with Android Gradle Plugin 8.7.3 and Gradle 8.10.2.
+- Target SDK: Android API 34 (Android 14+).
+- Background audio with lock screen media notifications and hardware volume control routing.
+- Automated CI pipeline compiling debug APKs and publishing releases on GitHub.
+
+### 3. Windows Desktop
+- Runtime: Electron 44 with electron-builder.
+- Global OS media key listeners (`MediaPlayPause`, `MediaNextTrack`, `MediaPreviousTrack`).
+- Background throttling disabled (`backgroundThrottling: false`) to ensure smooth continuous playback when minimized.
+
+---
+
+## Directory Structure
 
 ```
-jennie app codes/
-├── 📁 android/                     # Native Android Studio project (Gradle, AndroidManifest)
-├── 📁 ios/                         # Native Xcode iOS project (Swift, Info.plist)
-├── 📁 electron/                    # Desktop runtime processes
-│   ├── main.cjs                   # Electron main process (Media keys, window manager)
-│   └── preload.cjs                # Secure context bridge (electronAPI)
-├── 📁 src/                         # Unified React 19 application
-│   ├── 📁 components/             # PlayerBar, FullscreenPlayer, LyricsView, etc.
-│   ├── 📁 pages/                  # Home, Search, ArtistDetail, AlbumDetail, etc.
-│   ├── 📁 services/               # API clients, recommendations, & nativeBridge.js
-│   ├── 📁 store/                  # Zustand stores (usePlayerStore, useLibraryStore)
-│   └── index.css                  # Tailwind styles with safe-area insets
-├── capacitor.config.json          # Capacitor configuration (App ID, Splash, StatusBar)
-├── package.json                   # Cross-platform dependencies and build scripts
-└── vite.config.js                 # Optimized bundler configuration
+jennie codes/
+├── .github/
+│   └── workflows/
+│       ├── build-apk.yml          # Automated Android APK compilation & release
+│       └── deploy.yml             # Web continuous integration verification
+├── android/                       # Native Android project (Gradle, AndroidManifest)
+│   ├── app/                       # Android application module
+│   └── gradle/wrapper/            # Gradle 8.10.2 wrapper
+├── electron/                      # Desktop runtime entry points
+│   ├── main.cjs                   # Electron main process & media key listeners
+│   └── preload.cjs                # Context bridge API
+├── src/                           # React 19 frontend codebase
+│   ├── components/                # Modular UI components (Player, Layout, Settings)
+│   ├── pages/                     # Application routes (Home, Search, ArtistDetail)
+│   ├── services/                  # API layer, recommendation engine, permissions
+│   ├── store/                     # Zustand state management stores
+│   └── index.css                  # Global styling and design tokens
+├── capacitor.config.json          # Capacitor configuration
+├── package.json                   # Dependencies, scripts, and build targets
+└── vite.config.js                 # Vite bundler configuration & code splitting
 ```
 
 ---
 
-## 🚀 Running & Building the Apps
+## Getting Started
 
-### 📱 Android (APK & Google Play)
+### Prerequisites
+- Node.js 20.x or higher
+- npm 10.x or higher
 
-1. **Build web bundle and sync native Android project**:
+### Installation
+
+1. Clone the repository:
    ```bash
-   npm run build:mobile
+   git clone https://github.com/bhaveshpatil-ks/JENNIE_WEB-APP.git
+   cd "JENNIE_WEB-APP"
    ```
 
-2. **Open in Android Studio**:
+2. Install dependencies:
    ```bash
-   npm run cap:open:android
+   npm install
    ```
-   *In Android Studio, click **Build > Build Bundle(s) / APK(s) > Build APK(s)** to generate your installable `.apk` file.*
 
-3. **Or build debug APK directly via command line**:
-   ```bash
-   cd android
-   ./gradlew assembleDebug
-   # APK generated at: android/app/build/outputs/apk/debug/app-debug.apk
-   ```
+### Running Locally (Web)
+
+```bash
+npm run dev
+```
+Open your browser at `http://localhost:5173`.
+
+### Production Web Build
+
+```bash
+npm run build
+```
+Generates production-optimized static assets in `dist/`.
 
 ---
 
-### 🍏 iOS (iPhone & iPad)
+## Native Builds
 
-*(Requires macOS with Xcode installed)*
+### Android APK
 
-1. **Build web assets and sync iOS project**:
+#### Via GitHub Actions (Cloud Build)
+Push to the `main` branch or trigger the `Build Android APK & Release` workflow manually under the **Actions** tab. The compiled `.apk` will be available in **Releases** and **Artifacts**.
+
+#### Locally (via Android Studio)
+1. Build web bundle and sync native Android project:
    ```bash
-   npm run build:mobile
+   npm run build
+   npx cap sync android
    ```
-
-2. **Open in Xcode**:
+2. Open in Android Studio:
    ```bash
-   npm run cap:open:ios
+   npx cap open android
    ```
-   *Select your simulator or connected iPhone and press **Cmd + R** to run.*
+3. In Android Studio, select **Build > Build Bundle(s) / APK(s) > Build APK(s)**.
 
----
+### Windows Desktop Application
 
-### 💻 Windows & macOS (Desktop)
-
-#### Development Mode (with Live Hot-Reloading):
+#### Development Mode:
 ```bash
 npm run electron:dev
 ```
 
-#### Production Desktop Package:
+#### Package Windows Executable:
 ```bash
 npm run electron:build
 ```
-- **Windows**: Produces `.exe` installer (NSIS) and portable `.exe` inside `release/`.
-- **macOS**: Produces `.dmg` disk image and `.zip` inside `release/`.
+Generates the Windows installer (`.exe`) inside the `release/` directory.
 
 ---
 
-## 🔒 Safety, Security & Feedback
-- **API Shielding**: Backend URLs are routed through `/api` reverse proxies; sensitive `.env` keys and native build credentials remain strictly excluded from git tracking.
-- **Help & Complaints Center**: Integrated multi-category user feedback form with auto-priority triaging (High/Medium/Low), screenshot attachment, rate-limiting (5/hr), and human safety review for abuse reports.
-- **User Status Tracking**: Users can monitor past reports in real-time under "My Reports" with ticket reference numbers (e.g. `REF-7A9B3E2F`).
-- **Admin Resolver**: Fast admin console to filter tickets, change status (`open` -> `in_review` -> `resolved`), add internal notes, and reply via email.
+## License
 
----
-
-## ⚡ Automated Contribution Engine
-- **Push All Edits Separately**:
-  ```bash
-  npm run push:all
-  ```
-  *Commits each changed file individually with semantic messages and pushes one-by-one to boost GitHub contributions.*
-
-- **Continuous Watch Mode**:
-  ```bash
-  npm run watch:push
-  ```
-  *Auto-detects saved edits while you code and pushes each file separately.*
-
+This project is licensed under the MIT License.
