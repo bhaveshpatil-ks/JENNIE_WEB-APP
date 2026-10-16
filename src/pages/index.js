@@ -9,4 +9,5 @@ export { PrivacyPolicy, TermsAndConditions, CookiePolicy, RefundPolicy, Business
 export { Settings } from './Settings';
 export { Feedback } from './Feedback';
 export { NotFound } from './NotFound';
+export { DownloadApp } from './DownloadApp';
 
