@@ -7,6 +7,16 @@ export const isNativePlatform = () => {
   return Capacitor.isNativePlatform();
 };
 
+export const isStandaloneApp = () => {
+  if (typeof window === 'undefined') return false;
+  if (Capacitor.isNativePlatform()) return true;
+  if (window.electronAPI?.isElectron) return true;
+  if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+  if (window.navigator?.standalone === true) return true;
+  if (window.location.protocol === 'file:' || window.location.protocol === 'capacitor:') return true;
+  return false;
+};
+
 export const getPlatform = () => {
   if (typeof window !== 'undefined' && window.electronAPI?.isElectron) {
     return window.electronAPI.platform || 'electron';
