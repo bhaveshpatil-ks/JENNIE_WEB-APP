@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Lenis from 'lenis';
 import { Music } from 'lucide-react';
 import { Sidebar, TopHeader, MobileNav } from './index';
@@ -19,24 +19,30 @@ import {
   triggerHaptic,
 } from '../../services/nativeBridge';
 
-// Pages
-import {
-  Home,
-  Search,
-  Library,
-  Favorites,
-  PlaylistDetail,
-  ArtistDetail,
-  AlbumDetail,
-  PrivacyPolicy,
-  TermsAndConditions,
-  CookiePolicy,
-  RefundPolicy,
-  BusinessDetails,
-  Settings,
-  Feedback,
-  NotFound,
-} from '../../pages';
+// Core Views (Loaded upfront for instant initial render)
+import { Home, Search, Library, Favorites } from '../../pages';
+
+// Code-split Lazy Views (Loaded on demand to keep initial bundle ultra-fast)
+const PlaylistDetail = React.lazy(() => import('../../pages/PlaylistDetail').then((m) => ({ default: m.PlaylistDetail })));
+const ArtistDetail = React.lazy(() => import('../../pages/ArtistDetail').then((m) => ({ default: m.ArtistDetail })));
+const AlbumDetail = React.lazy(() => import('../../pages/AlbumDetail').then((m) => ({ default: m.AlbumDetail })));
+const Settings = React.lazy(() => import('../../pages/Settings').then((m) => ({ default: m.Settings })));
+const Feedback = React.lazy(() => import('../../pages/Feedback').then((m) => ({ default: m.Feedback })));
+const NotFound = React.lazy(() => import('../../pages/NotFound').then((m) => ({ default: m.NotFound })));
+const PrivacyPolicy = React.lazy(() => import('../../pages/legal/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })));
+const TermsAndConditions = React.lazy(() => import('../../pages/legal/TermsAndConditions').then((m) => ({ default: m.TermsAndConditions })));
+const CookiePolicy = React.lazy(() => import('../../pages/legal/CookiePolicy').then((m) => ({ default: m.CookiePolicy })));
+const RefundPolicy = React.lazy(() => import('../../pages/legal/RefundPolicy').then((m) => ({ default: m.RefundPolicy })));
+const BusinessDetails = React.lazy(() => import('../../pages/legal/BusinessDetails').then((m) => ({ default: m.BusinessDetails })));
+
+const ViewLoadingFallback = () => (
+  <div className="py-24 flex flex-col items-center justify-center animate-pulse text-neutral-400">
+    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-3">
+      <Music size={22} className="text-white/60 animate-spin" />
+    </div>
+    <div className="h-3 w-32 bg-white/10 rounded-full" />
+  </div>
+);
 
 export const AppLayout = () => {
   const activeView = useLibraryStore((state) => state.activeView);
@@ -379,7 +385,9 @@ export const AppLayout = () => {
         >
           <div ref={contentRef} className="max-w-7xl mx-auto">
             <div key={`${activeView}-${selectedItem?.id || ''}`} className="animate-luxury-fade">
-              {renderView()}
+              <Suspense fallback={<ViewLoadingFallback />}>
+                {renderView()}
+              </Suspense>
             </div>
           </div>
         </main>
